@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  modules: ["@nuxtjs/supabase"],
+  modules: ["@nuxtjs/supabase", 'nuxt-gtag'],
 
   supabase: {
     redirect: false,
@@ -28,7 +28,7 @@ export default defineNuxtConfig({
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || "https://www.clearflowgutters.pro",
     },
-    adminEmails: process.env.ADMIN_EMAILS || "",
+    adminEmails: process.env.ADMIN_EMAILS as string || "",
   },
   nitro: {
     prerender: {
@@ -37,5 +37,8 @@ export default defineNuxtConfig({
         ...cityRoutes,      // /gutter-cleaning-pasadena-ca, etc.
       ],
     },
+  },
+  gtag: {
+    enabled: process.env.NODE_ENV === 'production',
   },
 });

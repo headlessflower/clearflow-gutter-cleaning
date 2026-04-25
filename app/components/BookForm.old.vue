@@ -1,3 +1,4 @@
+<!-- File: components/BookingForm.vue -->
 <template>
     <form
         @submit.prevent="handleSubmit"
@@ -457,7 +458,6 @@
 
 <script setup lang="ts">
 const supabase = useSupabaseClient();
-const trackEvent = useTrackEvent();
 
 type ServiceType = "single_story" | "two_story" | "multi_story";
 type AddOnKey =
@@ -600,50 +600,6 @@ function planLabel(plan: MaintenancePlan) {
     return "";
 }
 
-function normalizeAnalyticsValue(value: string | number | boolean | null | undefined) {
-    if (typeof value === "string") {
-        const normalized = value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_");
-        return normalized || "unknown";
-    }
-
-    if (typeof value === "number") {
-        return Number.isFinite(value) ? value : 0;
-    }
-
-    if (typeof value === "boolean") {
-        return value ? "yes" : "no";
-    }
-
-    return "unknown";
-}
-
-function trackBookingSubmitted() {
-    const approxFt = approxFtNumber.value;
-    const referralCount = Math.max(0, Number(form.referrals) || 0);
-    const estimatedValue = discountedTotalQuote.value ?? totalQuote.value;
-
-    trackEvent("generate_lead", {
-        form_name: "booking_form",
-        lead_type: "booking_request",
-        service_type: normalizeAnalyticsValue(form.service_type),
-        city: normalizeAnalyticsValue(form.city),
-        county: normalizeAnalyticsValue(form.county),
-        home_size: normalizeAnalyticsValue(form.service_type),
-        maintenance_plan: normalizeAnalyticsValue(form.maintenance_plan || "none"),
-        add_on_count: form.add_ons.length,
-        add_ons: form.add_ons.length
-            ? form.add_ons.map((item) => normalizeAnalyticsValue(item)).join("|")
-            : "none",
-        gutter_guard_removal: normalizeAnalyticsValue(form.gutter_guard_removal),
-        water_access: normalizeAnalyticsValue(form.water_access),
-        referral_count: referralCount,
-        estimated_value: estimatedValue,
-        currency: "USD",
-        preferred_date: form.preferred_date || "unknown",
-        approx_ft: approxFt ?? 0,
-    });
-}
-
 const planYearly = computed<null | {
     cleaningsPerYear: number;
     planLabel: string;
@@ -724,7 +680,6 @@ async function handleSubmit() {
             return;
         }
 
-        trackBookingSubmitted();
         success.value = true;
 
         // reset

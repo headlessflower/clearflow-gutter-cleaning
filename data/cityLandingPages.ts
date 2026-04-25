@@ -382,4 +382,241 @@ export const cityLandingPages = {
       "Nearby communities",
     ],
   },
+  "san-dimas": {
+    name: "San Dimas",
+    metaTitle: "Gutter Cleaning San Dimas CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in San Dimas, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "San Dimas homes can collect heavy leaf litter and roof grit—especially after windy days. We remove buildup fast and haul away all debris.",
+    frequencyIntro:
+        "Regular gutter cleanings in San Dimas help prevent clogs from seasonal leaf drop and keep water draining safely during storms.",
+    areas: [
+      "Old Town San Dimas",
+      "Via Verde",
+      "Foothill Blvd corridor",
+      "Canyon-adjacent homes",
+      "Residential neighborhoods",
+      "Nearby foothill blocks",
+    ],
+  },
+
+  "diamond-bar": {
+    name: "Diamond Bar",
+    metaTitle: "Gutter Cleaning Diamond Bar CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Diamond Bar, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Diamond Bar properties with mature trees and multi-level rooflines benefit from routine gutter maintenance. We clean thoroughly and keep the site tidy.",
+    frequencyIntro:
+        "In Diamond Bar, seasonal debris and wind can cause gutter buildup—regular cleanings help prevent overflow and drainage issues.",
+    areas: [
+      "Diamond Bar Hills",
+      "Golden Springs",
+      "Brea Canyon area",
+      "Summitridge",
+      "Residential neighborhoods",
+      "Nearby communities",
+    ],
+  },
+
+  "walnut": {
+    name: "Walnut",
+    metaTitle: "Gutter Cleaning Walnut CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Walnut, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Walnut homes often have tree coverage that fills gutters with leaves and seed pods. We clear everything out and haul away debris.",
+    frequencyIntro:
+        "Routine gutter cleanings in Walnut help keep downspouts flowing and reduce overflow risk during rainy weather.",
+    areas: [
+      "South Walnut",
+      "North Walnut",
+      "Near Mt. SAC area",
+      "Residential hillsides",
+      "Tree-lined neighborhoods",
+      "Nearby communities",
+    ],
+  },
+
+  "irwindale": {
+    name: "Irwindale",
+    metaTitle: "Gutter Cleaning Irwindale CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Irwindale, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Irwindale homeowners choose ClearFlow for straightforward, flat-rate gutter cleaning with full debris removal and a clean finish.",
+    frequencyIntro:
+        "Seasonal debris can clog gutters over time—regular cleanings in Irwindale help prevent backups and staining during storms.",
+    areas: [
+      "Residential Irwindale",
+      "Near Santa Fe Dam area",
+      "Arrow Hwy corridor",
+      "Neighborhood streets",
+      "Nearby SGV blocks",
+      "Adjacent communities",
+    ],
+  },
+
+  "baldwin-park": {
+    name: "Baldwin Park",
+    metaTitle: "Gutter Cleaning Baldwin Park CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Baldwin Park, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Baldwin Park residents book ClearFlow for dependable gutter cleaning—full debris removal and fast service you can count on.",
+    frequencyIntro:
+        "Routine gutter cleanings in Baldwin Park help prevent clogs from seasonal leaf drop and keep water directed away from your home.",
+    areas: [
+      "North Baldwin Park",
+      "South Baldwin Park",
+      "Near Ramona Blvd",
+      "Near Maine Ave",
+      "Residential neighborhoods",
+      "Nearby communities",
+    ],
+  },
+
+  "el-monte": {
+    name: "El Monte",
+    metaTitle: "Gutter Cleaning El Monte CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in El Monte, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "El Monte homeowners rely on ClearFlow for simple, affordable gutter cleaning with full debris removal and a clean finish.",
+    frequencyIntro:
+        "Regular gutter maintenance in El Monte helps prevent overflow and keeps downspouts flowing during seasonal storms.",
+    areas: [
+      "North El Monte",
+      "South El Monte",
+      "Near Valley Blvd",
+      "Near Garvey Ave",
+      "Residential neighborhoods",
+      "Nearby SGV blocks",
+    ],
+  },
+
+  "rowland-heights": {
+    name: "Rowland Heights",
+    metaTitle: "Gutter Cleaning Rowland Heights CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Rowland Heights, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Rowland Heights homes—especially on hillsides—benefit from regular gutter cleaning to prevent overflow and protect foundations.",
+    frequencyIntro:
+        "Wind-driven debris and seasonal leaf drop can clog gutters in Rowland Heights—routine service helps keep drainage working properly.",
+    areas: [
+      "Hillside neighborhoods",
+      "Near Colima Rd",
+      "Near Pathfinder Park area",
+      "Residential blocks",
+      "Tree-lined streets",
+      "Nearby communities",
+    ],
+  },
+
+  "hacienda-heights": {
+    name: "Hacienda Heights",
+    metaTitle: "Gutter Cleaning Hacienda Heights CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Hacienda Heights, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Hacienda Heights homes with mature landscaping can see faster gutter buildup. We remove leaves and roof grit and haul away the debris.",
+    frequencyIntro:
+        "Regular gutter cleanings in Hacienda Heights help prevent clogs and overflow—especially after windy days and during leaf drop seasons.",
+    areas: [
+      "Near Hacienda Blvd",
+      "Near Colima Rd",
+      "Hillside neighborhoods",
+      "Tree-lined streets",
+      "Residential neighborhoods",
+      "Nearby communities",
+    ],
+  },
+
+  "uptown-whittier": {
+    name: "Whittier",
+    metaTitle: "Gutter Cleaning Whittier CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Whittier, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Whittier homes can collect leaves, roof grit, and seed pods in gutters throughout the year. We clear everything out and leave your property tidy.",
+    frequencyIntro:
+        "Routine gutter cleaning in Whittier helps prevent overflow and keeps water moving safely away from your home during storms.",
+    areas: [
+      "Uptown Whittier",
+      "Friendly Hills",
+      "East Whittier",
+      "Whittier Hills",
+      "Residential neighborhoods",
+      "Nearby communities",
+    ],
+  },
+
+  "rancho-cucamonga": {
+    name: "Rancho Cucamonga",
+    metaTitle: "Gutter Cleaning Rancho Cucamonga CA | ClearFlow Gutter Services",
+    metaDescription:
+        "Professional gutter cleaning in Rancho Cucamonga, CA. Flat-rate pricing, fast service, and full debris removal.",
+    whyIntro:
+        "Rancho Cucamonga properties near the foothills can see heavier debris buildup after winds. We provide thorough cleaning and full debris removal.",
+    frequencyIntro:
+        "With seasonal leaf drop and windy days, regular gutter cleanings in Rancho Cucamonga help prevent clogs and overflow during storms.",
+    areas: [
+      "Terra Vista",
+      "Victoria",
+      "Alta Loma",
+      "Foothill-adjacent homes",
+      "Residential neighborhoods",
+      "Nearby communities",
+    ],
+  },
 } as const;
+export type CityLandingPageKey = keyof typeof cityLandingPages;
+export type CityLandingPage = (typeof cityLandingPages)[CityLandingPageKey];
+
+export function getNearbyCities(
+  currentSlug: CityLandingPageKey,
+  limit = 4
+): Array<{ name: string; slug: CityLandingPageKey }> {
+  const entries = Object.entries(cityLandingPages) as Array<
+    [CityLandingPageKey, CityLandingPage]
+  >;
+
+  const currentIndex = entries.findIndex(([slug]) => slug === currentSlug);
+
+  if (currentIndex === -1) return [];
+
+  const maxItems = Math.min(limit, Math.max(entries.length - 1, 0));
+  const nearby: Array<{ name: string; slug: CityLandingPageKey }> = [];
+
+  let offset = 1;
+
+  while (nearby.length < maxItems) {
+    const leftIndex = currentIndex - offset;
+    const rightIndex = currentIndex + offset;
+    let addedThisRound = false;
+
+    if (leftIndex >= 0) {
+      const [slug, city] = entries[leftIndex];
+      nearby.push({ name: city.name, slug });
+      addedThisRound = true;
+
+      if (nearby.length >= maxItems) break;
+    }
+
+    if (rightIndex < entries.length) {
+      const [slug, city] = entries[rightIndex];
+      nearby.push({ name: city.name, slug });
+      addedThisRound = true;
+
+      if (nearby.length >= maxItems) break;
+    }
+
+    if (!addedThisRound) break;
+
+    offset += 1;
+  }
+
+  return nearby;
+}

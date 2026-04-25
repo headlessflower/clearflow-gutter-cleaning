@@ -18,8 +18,11 @@ export type Database = {
         Row: {
           add_ons: Json
           address: string
+          admin_notes: string | null
           approx_ft: number | null
           city: string
+          completed_at: string | null
+          contacted_at: string | null
           county: string
           created_at: string
           discount_type: string | null
@@ -33,17 +36,22 @@ export type Database = {
           phone: string
           preferred_date: string
           referral_count: number | null
+          scheduled_for: string | null
           service_type: Database["public"]["Enums"]["service_type"]
           status: string
           total_quote: number | null
+          updated_at: string | null
           water_access: boolean
           zip: string | null
         }
         Insert: {
           add_ons?: Json
           address: string
+          admin_notes?: string | null
           approx_ft?: number | null
           city: string
+          completed_at?: string | null
+          contacted_at?: string | null
           county: string
           created_at?: string
           discount_type?: string | null
@@ -57,17 +65,22 @@ export type Database = {
           phone: string
           preferred_date: string
           referral_count?: number | null
+          scheduled_for?: string | null
           service_type: Database["public"]["Enums"]["service_type"]
           status?: string
           total_quote?: number | null
+          updated_at?: string | null
           water_access?: boolean
           zip?: string | null
         }
         Update: {
           add_ons?: Json
           address?: string
+          admin_notes?: string | null
           approx_ft?: number | null
           city?: string
+          completed_at?: string | null
+          contacted_at?: string | null
           county?: string
           created_at?: string
           discount_type?: string | null
@@ -81,9 +94,11 @@ export type Database = {
           phone?: string
           preferred_date?: string
           referral_count?: number | null
+          scheduled_for?: string | null
           service_type?: Database["public"]["Enums"]["service_type"]
           status?: string
           total_quote?: number | null
+          updated_at?: string | null
           water_access?: boolean
           zip?: string | null
         }
