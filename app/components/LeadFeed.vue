@@ -74,13 +74,17 @@ const cityFilter = ref('all')
 const dateFilter = ref('all')
 const searchFilter = ref('')
 const minQuoteFilter = ref('')
+const leadStatusFilter = ref('all')
 
 const isActive = computed(() => profile.value?.subscription_status === 'active')
 const isStarter = computed(() => profile.value?.subscription_tier === 'starter')
 const isPro = computed(() => profile.value?.subscription_tier === 'pro')
 const monthlyLimit = computed(() => profile.value?.monthly_lead_view_limit ?? 10)
-const monthlyUsed = computed(() => profile.value?.monthly_lead_views_used ?? viewedLeadIds.value.length)
-const monthlyRemaining = computed(() => Math.max(0, monthlyLimit.value - monthlyUsed.value))
+const monthlyUsed = computed(() => viewedLeadIds.value.length)
+
+const monthlyRemaining = computed(() => {
+  return Math.max(0, monthlyLimit.value - monthlyUsed.value)
+})
 
 const canBrowseFullFeed = computed(() => isActive.value && (isStarter.value || isPro.value))
 
@@ -124,6 +128,31 @@ const filteredLeads = computed(() => {
         .toLowerCase()
 
       return haystack.includes(searchFilter.value.trim().toLowerCase())
+    })
+    .filter((lead) => {
+      if (leadStatusFilter.value === 'all') return true
+
+      if (leadStatusFilter.value === 'viewed') {
+        return hasViewedLead(lead.id)
+      }
+
+      if (leadStatusFilter.value === 'unviewed') {
+        return !hasViewedLead(lead.id)
+      }
+
+      if (leadStatusFilter.value === 'claimed_by_me') {
+        return Boolean(lead.claimed_by_me)
+      }
+
+      if (leadStatusFilter.value === 'claimed_by_others') {
+        return Boolean(lead.is_claimed && !lead.claimed_by_me)
+      }
+
+      if (leadStatusFilter.value === 'available') {
+        return !lead.is_claimed
+      }
+
+      return true
     })
     .sort((a, b) => {
       return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime()
@@ -227,6 +256,20 @@ async function fetchProfile() {
   if (error) throw error
 
   profile.value = data as ContractorProfile | null
+}
+
+function getMoreInfoTooltip(leadId: string) {
+  if (canOpenLead(leadId)) return ''
+
+  if (isStarter.value && monthlyRemaining.value <= 0 && !hasViewedLead(leadId)) {
+    return 'You’ve used all 10 Starter views. Upgrade to Pro for unlimited lead access.'
+  }
+
+  if (!isActive.value) {
+    return 'Activate your subscription to view full lead details.'
+  }
+
+  return ''
 }
 
 async function fetchViewedLeads() {
@@ -429,10 +472,26 @@ onMounted(loadPage)
 
       <aside class="account-card">
         <span>{{ profile?.company_name || 'Contractor account' }}</span>
+
         <strong>{{ profile?.subscription_tier || 'No plan' }}</strong>
-        <p v-if="isStarter">{{ monthlyUsed }} / {{ monthlyLimit }} leads viewed this month</p>
-        <p v-else-if="isPro">Unlimited lead access</p>
-        <p v-else>Subscription inactive</p>
+
+        <div class="account-card__stats">
+          <p v-if="isStarter">
+            {{ monthlyUsed }} / {{ monthlyLimit }} views used
+          </p>
+
+          <p v-else-if="isPro">
+            Unlimited lead views
+          </p>
+
+          <p v-else>
+            Subscription inactive
+          </p>
+
+          <p v-if="claimedLeadIds.length">
+            {{ claimedLeadIds.length }} claimed leads
+          </p>
+        </div>
       </aside>
     </header>
 
@@ -448,6 +507,19 @@ onMounted(loadPage)
       <label class="field field--search">
         <span>Search</span>
         <input v-model="searchFilter" type="text" placeholder="Name, city, service, notes" />
+      </label>
+
+      <label class="field">
+        <span>Status</span>
+        <select v-model="leadStatusFilter">
+          <option value="all">All leads</option>
+          <option value="available">Available only</option>
+          <option value="unviewed">Unviewed </option>
+          <option value="viewed">Viewed </option>
+          <option value="claimed_by_me">Claimed by me </option>
+          <option value="claimed_by_others">Claimed by others</option>
+
+        </select>
       </label>
 
       <label class="field">
@@ -472,6 +544,30 @@ onMounted(loadPage)
         <input v-model="minQuoteFilter" type="number" min="0" step="25" placeholder="250" />
       </label>
     </section>
+
+    <div class="quick-filters">
+      <button type="button" :class="{ active: leadStatusFilter === 'all' }" @click="leadStatusFilter = 'all'">
+        All
+      </button>
+
+      <button type="button" :class="{ active: leadStatusFilter === 'available' }"
+        @click="leadStatusFilter = 'available'">
+        Available
+      </button>
+
+      <button type="button" :class="{ active: leadStatusFilter === 'viewed' }" @click="leadStatusFilter = 'viewed'">
+        Viewed
+      </button>
+
+      <button type="button" :class="{ active: leadStatusFilter === 'claimed_by_me' }"
+        @click="leadStatusFilter = 'claimed_by_me'">
+        My claimed leads
+      </button>
+    </div>
+    <div class="filter-summary">
+      Showing {{ filteredLeads.length }} of {{ leads.length }} leads
+    </div>
+
 
     <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
 
@@ -508,11 +604,12 @@ onMounted(loadPage)
 
         <div class="lead-card__footer">
           <span class="viewed-badge" :class="{
-            'viewed-badge--claimed': lead.is_claimed,
-            'viewed-badge--viewed': hasViewedLead(lead.id),
+            'viewed-badge--owned': lead.claimed_by_me,
+            'viewed-badge--claimed': lead.is_claimed && !lead.claimed_by_me,
+            'viewed-badge--viewed': hasViewedLead(lead.id) && !lead.is_claimed,
           }">
             <template v-if="lead.claimed_by_me">
-              Claimed by you
+              ✓ Claimed by you
             </template>
             <template v-else-if="lead.is_claimed">
               Claimed
@@ -527,11 +624,16 @@ onMounted(loadPage)
               Included
             </template>
           </span>
-
           <div class="lead-actions">
-            <button type="button" :disabled="unlocking || !canOpenLead(lead.id)" @click="openLeadDetails(lead)">
-              More Info
-            </button>
+            <div class="tooltip-wrap">
+              <button type="button" :disabled="unlocking || !canOpenLead(lead.id)" @click="openLeadDetails(lead)">
+                More Info
+              </button>
+
+              <span v-if="getMoreInfoTooltip(lead.id)" class="tooltip">
+                {{ getMoreInfoTooltip(lead.id) }}
+              </span>
+            </div>
           </div>
         </div>
       </article>
@@ -740,11 +842,28 @@ onMounted(loadPage)
 
 .filters-card {
   display: grid;
-  grid-template-columns: minmax(260px, 1.4fr) repeat(3, minmax(160px, 1fr));
+  grid-template-columns: minmax(300px, 1.4fr) repeat(4, minmax(160px, 1fr));
   gap: 1rem;
+  align-items: end;
   margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 1.3rem;
+}
+
+@media (max-width: 1100px) {
+  .filters-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field--search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .filters-card {
+    grid-template-columns: 1fr;
+  }
 }
 
 .field {
@@ -815,10 +934,14 @@ onMounted(loadPage)
 .viewed-badge {
   display: inline-flex;
   align-items: center;
-  min-height: 2rem;
-  padding: 0 0.75rem;
+  justify-content: center;
+  min-height: 2.45rem;
   border-radius: 999px;
-  font-weight: 900;
+  padding: 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 950;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
 .quote-pill {
@@ -828,9 +951,12 @@ onMounted(loadPage)
 }
 
 .viewed-badge {
-  color: #536357;
-  background: #f6f8f3;
-  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  font-weight: 900;
 }
 
 .lead-meta {
@@ -1005,14 +1131,24 @@ onMounted(loadPage)
   cursor: not-allowed;
 }
 
+.viewed-badge--owned {
+  color: #fff;
+  background: linear-gradient(135deg, #c65a2e 0%, #9f3f1f 100%);
+  box-shadow:
+    0 12px 28px rgba(198, 90, 46, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
 .viewed-badge--claimed {
   color: #c2410c;
   background: #fff7ed;
+  border: 1px solid #fed7aa;
 }
 
 .viewed-badge--viewed {
   color: #536357;
   background: #f6f8f3;
+  border: 1px solid #e2e8f0;
 }
 
 @media (max-width: 680px) {
@@ -1068,5 +1204,111 @@ onMounted(loadPage)
 .close-button {
   color: #102018;
   background: #f6f8f3;
+}
+
+.filter-summary {
+  margin: -0.25rem 0 1rem;
+  color: #536357;
+  font-weight: 800;
+}
+
+.quick-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+}
+
+.quick-filters button {
+  border: 1px solid rgba(16, 32, 24, 0.1);
+  border-radius: 999px;
+  background: white;
+  color: #3d5246;
+  padding: 0.55rem 0.85rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.quick-filters button.active {
+  background: #1f6f3d;
+  color: white;
+}
+
+.filter-summary {
+  margin: -0.25rem 0 1rem;
+  color: #536357;
+  font-weight: 800;
+}
+
+.account-card__stats {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.account-card__stats p {
+  margin: 0;
+  color: #69766d;
+}
+
+.tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.6rem);
+  z-index: 20;
+  width: max-content;
+  max-width: 260px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.8rem;
+  background: #102018;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
+  box-shadow: 0 14px 30px rgba(16, 32, 24, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  right: 1rem;
+  top: 100%;
+  border-width: 0.45rem;
+  border-style: solid;
+  border-color: #102018 transparent transparent transparent;
+}
+
+.tooltip-wrap:hover .tooltip,
+.tooltip-wrap:focus-within .tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lead-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 640px) {
+  .lead-card__footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .viewed-badge,
+  .lead-actions button {
+    width: 100%;
+  }
 }
 </style>

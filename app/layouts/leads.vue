@@ -8,10 +8,10 @@
         </NuxtLink>
 
         <nav class="nav">
-          <NuxtLink to="/gutter-cleaning-leads">Leads</NuxtLink>
+          <NuxtLink to="/gutter-cleaning-leads/leads">Browse Leads</NuxtLink>
+          <NuxtLink to="/gutter-cleaning-leads/my-leads">My Leads</NuxtLink>
           <NuxtLink to="/gutter-cleaning-leads/pricing">Pricing</NuxtLink>
-          <NuxtLink to="/gutter-cleaning-leads/terms">Terms</NuxtLink>
-          <NuxtLink to="/gutter-cleaning-leads/privacy">Privacy</NuxtLink>
+
 
           <span v-if="leadCount !== null" class="lead-count">
             {{ leadCount }} leads available
@@ -30,8 +30,8 @@
           </template>
 
           <template v-else>
-            <NuxtLink to="/login" class="login">Login</NuxtLink>
-            <NuxtLink to="/signup" class="cta">Get Access</NuxtLink>
+            <NuxtLink to="/gutter-cleaning-leads/login" class="login">Login</NuxtLink>
+            <NuxtLink to="/gutter-cleaning-leads/signup" class="cta">Get Access</NuxtLink>
           </template>
         </div>
       </div>

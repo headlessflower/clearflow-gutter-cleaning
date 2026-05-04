@@ -30,6 +30,81 @@ const errorMessage = ref('')
 const viewingId = ref<string | null>(null)
 const claimingId = ref<string | null>(null)
 
+const workflowSteps = [
+  {
+    title: 'Browse available leads',
+    description: 'Preview recent gutter cleaning requests, including city, service timing, and estimated quote totals.',
+  },
+  {
+    title: 'Unlock lead details',
+    description: 'Use your monthly views to access customer contact information and full job details.',
+  },
+  {
+    title: 'Claim the lead',
+    description: 'Reserve the lead so you can follow up quickly and keep it out of the public pool.',
+  },
+  {
+    title: 'Close more local jobs',
+    description: 'Turn active homeowner requests into booked gutter cleaning work for your business.',
+  },
+]
+
+const citiesServed = [
+  'Los Angeles',
+  'Pasadena',
+  'Glendale',
+  'Burbank',
+  'Arcadia',
+  'Monrovia',
+  'Sierra Madre',
+  'South Pasadena',
+  'La Cañada Flintridge',
+  'Altadena',
+  'San Marino',
+  'Temple City',
+
+  'Alhambra',
+  'Azusa',
+  'Baldwin Park',
+  'Bellflower',
+  'Beverly Hills',
+  'Calabasas',
+  'Covina',
+  'Culver City',
+  'Diamond Bar',
+  'Downey',
+  'Duarte',
+  'El Monte',
+  'Glendora',
+  'La Puente',
+  'La Verne',
+  'Monterey Park',
+  'Montebello',
+  'Pomona',
+  'Rosemead',
+  'San Dimas',
+  'San Gabriel',
+  'Santa Monica',
+  'Walnut',
+  'West Covina',
+  'Whittier',
+]
+
+const starterViewLimit = 10
+
+const starterPotentialSales = computed(() => {
+  if (!averageQuote.value) return 0
+  return averageQuote.value * starterViewLimit
+})
+
+const totalLeadValue = computed(() => {
+  return leads.value.reduce((sum, lead) => {
+    return sum + Number(getQuoteTotal(lead) || 0)
+  }, 0)
+})
+
+
+
 const plans = [
   {
     name: 'Starter',
@@ -126,7 +201,7 @@ async function fetchLeadTeasers() {
     `)
     .eq('status', 'lead')
     .order('created_at', { ascending: false })
-    .limit(50)
+    .limit(19)
 
   if (bookingsError) {
     errorMessage.value = bookingsError.message
@@ -187,7 +262,7 @@ onMounted(fetchLeadTeasers)
       <div class="hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">Gutter cleaning lead marketplace</p>
-          <h1>See local gutter cleaning jobs before you subscribe.</h1>
+          <h1> Local gutter cleaning jobs for contractors</h1>
           <p class="hero-description">
             View active customer quote requests in your area. Subscribe to unlock full customer
             details, contact info, addresses, notes, and service requests.
@@ -200,7 +275,7 @@ onMounted(fetchLeadTeasers)
 
           <div class="hero-metrics" aria-label="Lead marketplace stats">
             <article>
-              <strong>{{ visibleLeadCount }}+</strong>
+              <strong>350+</strong>
               <span>active leads available</span>
             </article>
             <article>
@@ -208,7 +283,7 @@ onMounted(fetchLeadTeasers)
               <span>average quote preview</span>
             </article>
             <article>
-              <strong>LA</strong>
+              <strong>LA - San Bernardino</strong>
               <span>local service area</span>
             </article>
           </div>
@@ -239,34 +314,59 @@ onMounted(fetchLeadTeasers)
         </aside>
       </div>
     </section>
-
-    <section class="lead-preview-section" id="leads-preview">
+    <section class="sales-section">
       <div class="section-heading">
-        <p class="eyebrow">Preview available leads</p>
-        <h2>Recent customer quote requests</h2>
-        <p>
-          Everyone can see teaser info. Paid contractors can log in to view the full customer record.
-        </p>
+        <div>
+          <p class="eyebrow">Why contractors use it</p>
+          <h2>Built for local gutter businesses that want faster access to jobs</h2>
+        </div>
       </div>
 
-      <p v-if="errorMessage" class="error-banner">
-        Could not load lead previews: {{ errorMessage }}
-      </p>
+      <div class="sales-grid">
+        <article class="sales-card">
+          <h3>Real homeowner demand</h3>
+          <p>
+            These are homeowner requests from people actively looking for gutter cleaning
+            and related exterior maintenance services.
+          </p>
+        </article>
 
-      <div v-if="loading" class="lead-grid">
-        <article v-for="item in 8" :key="item" class="lead-card is-loading">
-          <div class="loading-line large"></div>
-          <div class="loading-line"></div>
-          <div class="loading-line short"></div>
+        <article class="sales-card">
+          <h3>Lower cost than paid ads</h3>
+          <p>
+            Instead of spending hundreds testing ad campaigns, start with a lower monthly
+            cost and access warm local opportunities.
+          </p>
+        </article>
+
+        <article class="sales-card">
+          <h3>Claim leads before others do</h3>
+          <p>
+            Once you find a strong opportunity, claim it and move quickly while the lead
+            is still fresh.
+          </p>
         </article>
       </div>
+    </section>
 
-      <div v-else-if="!leads.length" class="empty-state">
-        <h3>No lead previews available yet</h3>
-        <p>Once customers submit quote requests, the latest 50 will appear here.</p>
+    <section class="preview-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Live preview</p>
+          <h2>Recent gutter cleaning leads</h2>
+          <p>
+            Homeowners are looking for gutter cleaning right now.
+          </p>
+        </div>
+
+        <div class="preview-metrics">
+          <span>{{ visibleLeadCount }} leads shown</span>
+          <span v-if="averageQuote">{{ formatCurrency(averageQuote) }} avg. quote</span>
+          <span>{{ formatCurrency(totalLeadValue) }} total lead value</span>
+        </div>
       </div>
 
-      <div v-else class="lead-grid">
+      <div class="lead-preview-grid">
         <article v-for="lead in leads" :key="lead.id" class="lead-card">
           <div class="lead-card-header">
             <span class="lead-status-badge" :class="lead.is_claimed ? 'is-claimed' : 'is-available'">
@@ -277,27 +377,133 @@ onMounted(fetchLeadTeasers)
               Recently claimed
             </span>
           </div>
-          <div class="lead-card__top">
-            <div>
+
+          <div class="lead-card-body">
+            <div class="lead-card-main">
               <h3>{{ getTeaserName(lead.name) }}</h3>
-              <p>{{ lead.city || 'Los Angeles' }}</p>
+              <p class="lead-card-city">
+                {{ lead.city || 'Los Angeles area' }}
+              </p>
             </div>
-            <span class="quote-pill">{{ formatCurrency(getQuoteTotal(lead)) }}</span>
+
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">
+                <span class="lead-meta-label">Service</span>
+                <span class="lead-meta-value">
+                  {{ formatServiceType(lead.service_type) }}
+                </span>
+              </div>
+
+              <div class="lead-meta-row">
+                <span class="lead-meta-label">Requested</span>
+                <span class="lead-meta-value">
+                  {{ formatDate(lead.preferred_date) }}
+                </span>
+              </div>
+            </div>
           </div>
 
-          <dl class="lead-meta">
-            <div>
-              <dt>Requested</dt>
-              <dd>{{ formatDate(lead.preferred_date) }}</dd>
+          <div class="lead-card-footer">
+            <div class="lead-value-stack">
+              <span class="lead-value-label">Estimated quote</span>
+              <span class="lead-card-quote">
+                {{ formatCurrency(getQuoteTotal(lead)) }}
+              </span>
             </div>
-            <div>
-              <dt>Service</dt>
-              <dd>{{ formatServiceType(lead.service_type) }}</dd>
-            </div>
-          </dl>
-
-          <NuxtLink to="/gutter-cleaning-leads/login" class="details-button">Login to view details</NuxtLink>
+          </div>
         </article>
+
+        <article class="lead-card lead-card--cta">
+          <div>
+            <p class="eyebrow">Want more?</p>
+            <h3>See the full lead feed</h3>
+            <p>
+              Create your contractor account to unlock more leads, full customer details,
+              and lead claiming.
+            </p>
+          </div>
+
+          <div class="lead-card-cta-actions">
+            <NuxtLink to="/gutter-cleaning-leads/signup" class="primary-btn">
+              Get started
+            </NuxtLink>
+
+            <NuxtLink to="/gutter-cleaning-leads/leads" class="secondary-btn">
+              View more leads
+            </NuxtLink>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="workflow-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">How it works</p>
+          <h2>A simple local lead workflow</h2>
+          <p>
+            ClearFlow Leads is built to help gutter contractors move from lead discovery
+            to customer contact quickly.
+          </p>
+        </div>
+      </div>
+
+      <div class="workflow-grid">
+        <article v-for="(step, index) in workflowSteps" :key="step.title" class="workflow-card">
+          <span class="workflow-step-number">0{{ index + 1 }}</span>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </article>
+      </div>
+    </section>
+    <section class="cities-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Coverage</p>
+          <h2>Cities we serve</h2>
+          <p>
+            We focus on homeowner service requests in Los Angeles County and nearby areas.
+          </p>
+        </div>
+      </div>
+
+      <div class="cities-grid">
+        <span v-for="city in citiesServed" :key="city" class="city-pill">
+          {{ city }}
+        </span>
+      </div>
+    </section>
+    <section class="value-section">
+      <div class="value-card">
+        <div>
+          <p class="eyebrow">Starter plan value</p>
+          <h2>$49 can open the door to real local revenue</h2>
+          <p>
+            With the Starter plan, you get access to up to {{ starterViewLimit }} lead views per month.
+            Based on the current average quote in the feed, that represents a potential
+            <strong>{{ formatCurrency(starterPotentialSales) }}</strong> in quoted job opportunities.
+          </p>
+
+          <p class="value-note">
+            That’s a small monthly cost for access to homeowner requests already looking for gutter service.
+          </p>
+        </div>
+
+        <div class="value-metrics">
+          <div class="value-metric">
+            <span>Starter price</span>
+            <strong>$49/mo</strong>
+          </div>
+
+          <div class="value-metric">
+            <span>Avg. quote</span>
+            <strong>{{ averageQuote ? formatCurrency(averageQuote) : '—' }}</strong>
+          </div>
+
+          <div class="value-metric">
+            <span>Preview feed value</span>
+            <strong>{{ formatCurrency(totalLeadValue) }}</strong>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -343,20 +549,26 @@ onMounted(fetchLeadTeasers)
   background: #f6f8f3;
 }
 
+/* Shared layout widths */
+.top-nav,
+.hero-grid,
+.lead-preview-section,
+.pricing-section,
+.login-cta-section,
+.workflow-section,
+.cities-section,
+.value-section,
+.sales-section {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+/* Hero */
 .hero-section {
   padding: 1rem 0 4rem;
   background:
     radial-gradient(circle at 15% 15%, rgba(80, 148, 94, 0.18), transparent 30%),
     linear-gradient(135deg, #f6f8f3 0%, #e8efe3 100%);
-}
-
-.top-nav,
-.hero-grid,
-.lead-preview-section,
-.pricing-section,
-.login-cta-section {
-  width: min(1180px, calc(100% - 2rem));
-  margin: 0 auto;
 }
 
 .top-nav {
@@ -372,7 +584,9 @@ onMounted(fetchLeadTeasers)
 .primary-button,
 .secondary-button,
 .details-button,
-.plan-button {
+.plan-button,
+.primary-btn,
+.secondary-btn {
   text-decoration: none;
 }
 
@@ -396,7 +610,8 @@ onMounted(fetchLeadTeasers)
 
 .nav-button,
 .primary-button,
-.plan-button {
+.plan-button,
+.primary-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -410,15 +625,16 @@ onMounted(fetchLeadTeasers)
 }
 
 .secondary-button,
-.details-button {
+.details-button,
+.secondary-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 2.85rem;
   padding: 0 1rem;
   border-radius: 999px;
-  color: #1f6f3d;
-  background: #fff;
+  color: #13231a;
+  background: #eaf0e8;
   border: 1px solid rgba(31, 111, 61, 0.16);
   font-weight: 800;
 }
@@ -478,9 +694,12 @@ onMounted(fetchLeadTeasers)
 .pricing-card,
 .empty-state,
 .error-banner,
-.login-cta-section {
+.login-cta-section,
+.workflow-card,
+.sales-card,
+.value-card {
   border: 1px solid rgba(16, 32, 24, 0.08);
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.86);
   box-shadow: 0 24px 60px rgba(16, 32, 24, 0.08);
 }
 
@@ -553,50 +772,140 @@ onMounted(fetchLeadTeasers)
   font-weight: 900;
 }
 
+/* Sections */
 .lead-preview-section,
-.pricing-section {
+.pricing-section,
+.workflow-section,
+.cities-section,
+.value-section,
+.sales-section {
   padding: 4rem 0;
 }
 
 .section-heading {
-  max-width: 760px;
-  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) auto;
+  gap: 1.5rem 2rem;
+  align-items: end;
+  margin-bottom: 2rem;
 }
 
-.section-heading h2,
-.login-cta-section h2 {
-  font-size: clamp(2.4rem, 5vw, 4.6rem);
+.section-heading h2 {
+  max-width: 8ch;
+  font-size: clamp(3rem, 6vw, 5.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.07em;
 }
 
 .section-heading p:not(.eyebrow) {
-  color: #69766d;
-  font-size: 1.05rem;
-  line-height: 1.65;
+  max-width: 36rem;
+  margin: 0.85rem 0 0;
+  color: #5b685f;
+  font-size: 1.3rem;
+  line-height: 1.45;
 }
 
-.lead-grid {
+.preview-metrics {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding-bottom: 0.5rem;
+}
+
+.preview-metrics span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.7rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  background: #f3f5f0;
+  color: #4a5563;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+/* Lead preview cards */
+.lead-preview-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.15rem;
 }
 
 .lead-card {
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  padding: 1.2rem 1.15rem 1.1rem;
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 14px 32px rgba(16, 32, 24, 0.05);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
-.lead-card__top {
+.lead-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 18px 38px rgba(16, 32, 24, 0.08);
+}
+
+.lead-card-header {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.8rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.35rem;
+}
+
+.lead-status-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.lead-status-badge.is-available {
+  color: #166534;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+}
+
+.lead-status-badge.is-claimed {
+  color: #c2410c;
+  background: rgba(249, 115, 22, 0.08);
+  border: 1px solid rgba(249, 115, 22, 0.28);
+}
+
+.activity-note {
+  color: #7a8796;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.lead-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.lead-card-main {
+  margin-bottom: 1.15rem;
 }
 
 .lead-card h3 {
-  margin: 0 0 0.2rem;
-  font-size: 1.2rem;
+  margin: 0;
+  color: #13231a;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  font-weight: 800;
 }
 
 .lead-card p {
@@ -604,47 +913,180 @@ onMounted(fetchLeadTeasers)
   color: #69766d;
 }
 
-.quote-pill {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  min-height: 2rem;
-  padding: 0 0.7rem;
-  border-radius: 999px;
-  background: rgba(31, 111, 61, 0.1);
-  color: #1f6f3d;
-  font-weight: 900;
+.lead-card-city {
+  margin: 0.65rem 0 0;
+  color: #5a675e;
+  font-size: 1.05rem;
 }
 
-.lead-meta {
+.lead-card-meta {
   display: grid;
-  gap: 0.7rem;
-  margin: 0;
+  gap: 0.85rem;
+  margin-top: auto;
 }
 
-.lead-meta div {
+.lead-meta-row {
   display: grid;
-  gap: 0.15rem;
+  gap: 0.2rem;
 }
 
+.lead-meta-label,
+.lead-value-label,
 .lead-meta dt {
-  color: #7a877e;
-  font-size: 0.74rem;
+  color: #93a098;
+  font-size: 0.76rem;
   font-weight: 900;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
+.lead-meta-value,
 .lead-meta dd {
-  margin: 0;
+  color: #5f6d64;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.lead-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(16, 32, 24, 0.07);
+}
+
+.lead-value-stack {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.lead-card-quote {
   color: #102018;
+  font-size: 1.9rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+/* CTA card at end of preview feed */
+.lead-card--cta {
+  justify-content: space-between;
+  background: linear-gradient(180deg, #f7f9f4 0%, #eef3ec 100%);
+}
+
+.lead-card--cta h3 {
+  margin: 0.35rem 0 0.85rem;
+  color: #102018;
+  font-size: 1.55rem;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.lead-card--cta p {
+  margin: 0;
+  color: #5b685f;
+  line-height: 1.55;
+}
+
+.lead-card-cta-actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* Workflow / sales / cities */
+.workflow-grid,
+.sales-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.workflow-card,
+.sales-card {
+  border-radius: 1.25rem;
+  padding: 1.2rem;
+  background: #fff;
+}
+
+.workflow-card h3,
+.sales-card h3 {
+  margin: 0 0 0.6rem;
+  color: #102018;
+}
+
+.workflow-card p,
+.sales-card p {
+  margin: 0;
+  color: #536357;
+  line-height: 1.6;
+}
+
+.workflow-step-number {
+  display: inline-flex;
+  margin-bottom: 0.8rem;
+  color: #1f6f3d;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.cities-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.city-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.4rem;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
   font-weight: 700;
 }
 
-.details-button {
-  width: 100%;
+/* Value section */
+.value-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+  gap: 1.5rem;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f6f8f3 100%);
 }
 
+.value-note {
+  margin-top: 1rem;
+  color: #536357;
+}
+
+.value-metrics {
+  display: grid;
+  gap: 1rem;
+}
+
+.value-metric {
+  border-radius: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid rgba(16, 32, 24, 0.06);
+}
+
+.value-metric span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #69766d;
+}
+
+.value-metric strong {
+  color: #102018;
+  font-size: 1.5rem;
+}
+
+/* Pricing */
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -684,8 +1126,8 @@ onMounted(fetchLeadTeasers)
 }
 
 .pricing-card h3 span {
-  font-size: 1rem;
   color: #69766d;
+  font-size: 1rem;
 }
 
 .plan-description {
@@ -708,6 +1150,7 @@ onMounted(fetchLeadTeasers)
   font-weight: 900;
 }
 
+/* Final CTA */
 .login-cta-section {
   display: flex;
   align-items: center;
@@ -718,6 +1161,15 @@ onMounted(fetchLeadTeasers)
   border-radius: 1.6rem;
 }
 
+.login-cta-section h2 {
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+}
+
+.login-cta-section p {
+  color: #536357;
+}
+
+/* Loading / empty / errors */
 .error-banner,
 .empty-state {
   padding: 1rem;
@@ -744,14 +1196,43 @@ onMounted(fetchLeadTeasers)
   width: 45%;
 }
 
-@media (max-width: 1020px) {
+/* Responsive */
+@media (max-width: 1300px) {
+  .lead-preview-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1100px) {
 
   .hero-grid,
-  .pricing-grid {
+  .pricing-grid,
+  .value-card {
     grid-template-columns: 1fr;
   }
 
-  .lead-grid {
+  .workflow-grid,
+  .sales-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .section-heading {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .section-heading h2 {
+    max-width: none;
+  }
+
+  .preview-metrics {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .lead-preview-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -767,43 +1248,14 @@ onMounted(fetchLeadTeasers)
   }
 
   .hero-metrics,
-  .lead-grid {
+  .lead-preview-grid,
+  .workflow-grid,
+  .sales-grid {
     grid-template-columns: 1fr;
   }
-}
 
-.lead-card-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.lead-status-badge {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  padding: 5px 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.lead-status-badge.is-available {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
-}
-
-.lead-status-badge.is-claimed {
-  background: #fff7ed;
-  color: #c2410c;
-  border: 1px solid #fed7aa;
-}
-
-.activity-note {
-  font-size: 0.78rem;
-  color: #64748b;
+  .lead-card {
+    min-height: auto;
+  }
 }
 </style>

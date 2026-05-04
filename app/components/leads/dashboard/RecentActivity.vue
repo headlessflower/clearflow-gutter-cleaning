@@ -6,7 +6,7 @@
         <p>Your latest lead updates.</p>
       </div>
 
-      <NuxtLink to="/gutter-cleaning-leads/contacted">
+      <NuxtLink to="/gutter-cleaning-leads/my-leads">
         Contacted list
       </NuxtLink>
     </div>

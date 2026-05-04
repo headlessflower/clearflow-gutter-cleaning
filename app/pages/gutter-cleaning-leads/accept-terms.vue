@@ -5,9 +5,9 @@
 
       <p>
         Before continuing, please review and accept our
-        <NuxtLink to="/terms">Terms & Conditions</NuxtLink>
+        <NuxtLink to="/gutter-cleaning-leads/terms">Terms & Conditions</NuxtLink>
         and
-        <NuxtLink to="/privacy">Privacy Policy</NuxtLink>.
+        <NuxtLink to="/gutter-cleaning-leads/privacy-policy">Privacy Policy</NuxtLink>.
       </p>
 
       <label class="terms-check">

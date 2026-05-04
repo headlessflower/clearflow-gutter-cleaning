@@ -13,9 +13,15 @@
         </p>
       </div>
 
-      <NuxtLink to="/gutter-cleaning-leads/leads" class="primary-btn">
-        View Leads
-      </NuxtLink>
+      <div class="header-actions">
+        <NuxtLink to="/gutter-cleaning-leads/my-leads" class="secondary-btn">
+          My Leads
+        </NuxtLink>
+
+        <NuxtLink to="/gutter-cleaning-leads/leads" class="primary-btn">
+          View Leads
+        </NuxtLink>
+      </div>
     </div>
 
     <DashboardStats :available-leads="availableLeads" :views-used="viewsUsed" :view-limit="viewLimit"
@@ -92,7 +98,7 @@ async function refreshDashboard() {
     await Promise.all([
       loadProfile(userId),
       loadLeadStats(userId),
-      loadPriorityLeads(),
+      loadPriorityLeads(userId),
       loadRecentActivity(userId)
     ])
   } catch (error: any) {
@@ -101,6 +107,21 @@ async function refreshDashboard() {
   } finally {
     loading.value = false
   }
+}
+
+async function getCurrentUserId() {
+  const { data, error } = await supabase.auth.getUser()
+
+  if (error) throw error
+
+  const userId = data.user?.id
+
+  if (!userId) {
+    await navigateTo('/gutter-cleaning-leads/login')
+    return null
+  }
+
+  return userId
 }
 
 async function loadProfile(userId: string) {
@@ -160,12 +181,12 @@ async function loadLeadStats(userId: string) {
   const { data: claimedQuotes, error: claimedQuoteError } = await supabase
     .from('lead_claims')
     .select(`
-    id,
-    bookings (
-      total_quote,
-      discounted_total_quote
-    )
-  `)
+      id,
+      bookings (
+        total_quote,
+        discounted_total_quote
+      )
+    `)
     .eq('contractor_id', userId)
     .in('status', ['claimed', 'contacted', 'scheduled', 'completed'])
 
@@ -174,11 +195,12 @@ async function loadLeadStats(userId: string) {
   pipelineValue.value = claimedQuotes?.reduce((sum, claim: any) => {
     return sum + getQuoteTotal(claim.bookings || {})
   }, 0) ?? 0
+}
 
-  async function loadPriorityLeads(userId: string) {
-    const { data, error } = await supabase
-      .from('lead_claims')
-      .select(`
+async function loadPriorityLeads(userId: string) {
+  const { data, error } = await supabase
+    .from('lead_claims')
+    .select(`
       id,
       booking_id,
       status,
@@ -192,33 +214,33 @@ async function loadLeadStats(userId: string) {
         discounted_total_quote
       )
     `)
-      .eq('contractor_id', userId)
-      .in('status', ['claimed', 'contacted', 'scheduled'])
-      .order('claimed_at', { ascending: false })
-      .limit(10)
+    .eq('contractor_id', userId)
+    .in('status', ['claimed', 'contacted', 'scheduled'])
+    .order('claimed_at', { ascending: false })
+    .limit(10)
 
-    if (error) throw error
+  if (error) throw error
 
-    priorityLeads.value = (data ?? [])
-      .map((claim: any) => {
-        const booking = claim.bookings
+  priorityLeads.value = (data ?? [])
+    .map((claim: any) => {
+      const booking = claim.bookings
 
-        return {
-          id: booking?.id || claim.booking_id,
-          customer_name: booking?.name || 'New Customer',
-          city: booking?.city || 'Los Angeles',
-          quote_total: getQuoteTotal(booking || {}),
-          requested_service_day: booking?.preferred_date || null,
-        }
-      })
-      .sort((a, b) => b.quote_total - a.quote_total)
-      .slice(0, 5)
-  }
+      return {
+        id: booking?.id || claim.booking_id,
+        customer_name: booking?.name || 'New Customer',
+        city: booking?.city || 'Los Angeles',
+        quote_total: getQuoteTotal(booking || {}),
+        requested_service_day: booking?.preferred_date || null,
+      }
+    })
+    .sort((a, b) => b.quote_total - a.quote_total)
+    .slice(0, 5)
+}
 
-  async function loadRecentActivity(userId: string) {
-    const { data, error } = await supabase
-      .from('lead_claims')
-      .select(`
+async function loadRecentActivity(userId: string) {
+  const { data, error } = await supabase
+    .from('lead_claims')
+    .select(`
       id,
       status,
       claimed_at,
@@ -231,55 +253,42 @@ async function loadLeadStats(userId: string) {
         discounted_total_quote
       )
     `)
-      .eq('contractor_id', userId)
-      .in('status', ['claimed', 'contacted', 'scheduled', 'completed'])
-      .order('claimed_at', { ascending: false })
-      .limit(5)
+    .eq('contractor_id', userId)
+    .in('status', ['claimed', 'contacted', 'scheduled', 'completed'])
+    .order('claimed_at', { ascending: false })
+    .limit(5)
 
-    if (error) throw error
+  if (error) throw error
 
-    recentActivity.value = data?.map((item: any) => ({
-      id: item.id,
-      label: item.status || 'claimed',
-      description: item.bookings
-        ? `${item.bookings.name || 'Customer'} in ${item.bookings.city || 'Los Angeles'} — ${formatMoney(getQuoteTotal(item.bookings))}`
-        : 'Lead claimed',
-      date: item.contacted_at || item.claimed_at
-    })) ?? []
-  }
-  function getQuoteTotal(lead: {
-    total_quote?: number | null
-    discounted_total_quote?: number | null
-  }) {
-    return Number(lead.discounted_total_quote || lead.total_quote || 0)
-  }
+  recentActivity.value = data?.map((item: any) => ({
+    id: item.id,
+    label: item.status || 'claimed',
+    description: item.bookings
+      ? `${item.bookings.name || 'Customer'} in ${item.bookings.city || 'Los Angeles'} — ${formatMoney(getQuoteTotal(item.bookings))}`
+      : 'Lead claimed',
+    date: item.contacted_at || item.claimed_at
+  })) ?? []
+}
 
-  function getMonthStartIso() {
-    const now = new Date()
-    return new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
-  }
+function getQuoteTotal(lead: {
+  total_quote?: number | null
+  discounted_total_quote?: number | null
+}) {
+  return Number(lead.discounted_total_quote || lead.total_quote || 0)
+}
 
-  function formatMoney(value: number) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(value || 0)
-  }
-  async function getCurrentUserId() {
-    const { data, error } = await supabase.auth.getUser()
+function getMonthStartIso() {
+  const now = new Date()
+  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+}
 
-    if (error) throw error
-
-    const userId = data.user?.id
-
-    if (!userId) {
-      await navigateTo('/gutter-cleaning-leads/login')
-      return null
-    }
-
-    return userId
-  }
+function formatMoney(value: number) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(value || 0)
+}
 </script>
 <style scoped>
 .dashboard-page {
@@ -361,5 +370,46 @@ h1 {
 
 .contractor-chip strong {
   color: #111827;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.secondary-btn {
+  border: 1px solid #cbd5e1;
+  color: #111827;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+.primary-btn {
+  background: #111827;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .header-actions {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    justify-content: center;
+    text-align: center;
+  }
 }
 </style>

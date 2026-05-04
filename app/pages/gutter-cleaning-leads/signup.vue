@@ -11,6 +11,7 @@ const supabase = useSupabaseClient()
 const TERMS_VERSION = 'v1'
 const acceptedAt = new Date().toISOString()
 const acceptedTerms = ref(false)
+const showPassword = ref(false)
 
 type PlanKey = 'starter' | 'pro'
 
@@ -34,7 +35,6 @@ const form = ref<SignupForm>({
   email: '',
   phone: '',
   password: '',
-  accepted_terms: false,
   service_area: '',
 })
 
@@ -76,41 +76,45 @@ function splitServiceArea(value: string) {
     .filter(Boolean)
 }
 
-async function createContractorProfile(userId: string) {
-  const { error } = await supabase.from('contractor_profiles').insert({
-    id: userId,
-    company_name: form.value.company_name,
-    contact_name: form.value.contact_name,
-    phone: form.value.phone,
-    service_area: splitServiceArea(form.value.service_area),
-    subscription_tier: selectedPlan.value,
-    subscription_status: 'inactive',
-    monthly_lead_view_limit: selectedPlan.value === 'starter' ? 10 : null,
-    monthly_lead_views_used: 0,
-
-    accepted_terms: true,
-    accepted_terms_at: acceptedAt,
-    terms_version: TERMS_VERSION,
-  })
-
-  if (!data?.user) {
-    throw new Error('User not returned from signup')
-  }
+async function ensureContractorProfile(userId: string, acceptedAt: string) {
+  const { error } = await supabase
+    .from('contractor_profiles')
+    .upsert(
+      {
+        id: userId,
+        company_name: form.value.company_name,
+        contact_name: form.value.contact_name,
+        phone: form.value.phone,
+        service_area: splitServiceArea(form.value.service_area),
+        subscription_tier: selectedPlan.value,
+        subscription_status: 'active',
+        monthly_lead_view_limit: selectedPlan.value === 'starter' ? 10 : 9999,
+        monthly_lead_views_used: 0,
+        accepted_terms: true,
+        accepted_terms_at: acceptedAt,
+        terms_version: TERMS_VERSION,
+      },
+      { onConflict: 'id' },
+    )
 
   if (error) throw error
-}
-async function handleSignup() {
+} async function handleSignup() {
+  if (loading.value) return
+
   loading.value = true
   errorMessage.value = ''
   successMessage.value = ''
 
   if (!acceptedTerms.value) {
     errorMessage.value = 'You must accept the Terms & Conditions'
+    loading.value = false
     return
   }
 
+  const acceptedAt = new Date().toISOString()
+
   try {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: form.value.email,
       password: form.value.password,
       options: {
@@ -120,7 +124,6 @@ async function handleSignup() {
           phone: form.value.phone,
           service_area: form.value.service_area,
           selected_plan: selectedPlan.value,
-
           accepted_terms: true,
           accepted_terms_at: acceptedAt,
           terms_version: TERMS_VERSION,
@@ -130,6 +133,12 @@ async function handleSignup() {
 
     if (error) throw error
 
+    if (!data.user) {
+      throw new Error('User not returned from signup.')
+    }
+
+    await ensureContractorProfile(data.user.id, acceptedAt)
+
     await router.push(`/gutter-cleaning-leads/checkout?plan=${selectedPlan.value}`)
   } catch (error: any) {
     errorMessage.value = error?.message || 'Could not create account. Please try again.'
@@ -137,19 +146,11 @@ async function handleSignup() {
     loading.value = false
   }
 }
-
 </script>
 
 <template>
   <main class="signup-page">
-    <nav class="top-nav" aria-label="Lead marketplace navigation">
-      <NuxtLink to="/gutter-cleaning-leads/" class="brand">ClearFlow Leads</NuxtLink>
 
-      <div class="nav-actions">
-        <NuxtLink to="/gutter-cleaning-leads/login" class="nav-link">Login</NuxtLink>
-        <NuxtLink to="/gutter-cleaning-leads/" class="nav-button">View Leads</NuxtLink>
-      </div>
-    </nav>
 
     <section class="signup-hero">
       <div class="hero-copy">
@@ -197,7 +198,15 @@ async function handleSignup() {
 
           <label class="field field--full">
             <span>Password</span>
-            <input v-model="form.password" type="password" autocomplete="new-password" minlength="8" required />
+
+            <div class="password-field">
+              <input v-model="form.password" :type="showPassword ? 'text' : 'password'" autocomplete="new-password"
+                minlength="8" required />
+
+              <button type="button" class="password-toggle" @click="showPassword = !showPassword">
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
           </label>
 
           <label class="field field--full">
@@ -217,7 +226,7 @@ async function handleSignup() {
 
         <div class="terms-checkbox">
           <label>
-            <input type="checkbox" v-model="accepted_terrms" />
+            <input type="checkbox" v-model="acceptedTerms" />
             I agree to the
             <NuxtLink to="/gutter-cleaning-leads/terms">Terms & Conditions</NuxtLink>
             and
@@ -577,5 +586,52 @@ async function handleSignup() {
   .field-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 5rem;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  transform: translateY(-50%);
+  min-height: 2.1rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 0.8rem;
+  background: #f6f8f3;
+  color: #1f6f3d;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.terms-checkbox {
+  margin-top: 1rem;
+}
+
+.terms-checkbox label {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  color: #102018;
+  line-height: 1.45;
+}
+
+.terms-checkbox input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.15rem;
+  accent-color: #1f6f3d;
+}
+
+.terms-checkbox a {
+  color: #1f6f3d;
+  font-weight: 900;
 }
 </style>
