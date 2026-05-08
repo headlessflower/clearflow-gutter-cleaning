@@ -1,23 +1,23 @@
 <template>
   <main v-if="city" class="min-h-screen bg-slate-50">
     <StickyCtaBar :to="bookingLink" phone="+13237095357" :city-name="city.name" />
-   <nav aria-label="Breadcrumb" class="mb-4 text-sm text-slate-300">
-  <ol class="flex flex-wrap items-center gap-2">
-    <li>
-      <NuxtLink to="/" class="hover:text-white">Home</NuxtLink>
-    </li>
-    <li>/</li>
-    <li>
-      <NuxtLink to="/landing-pages" class="hover:text-white">Service Areas</NuxtLink>
-    </li>
-    <li>/</li>
-    <li class="text-white">Gutter Cleaning {{ city.name }}, CA</li>
-  </ol>
-</nav>
+    <nav aria-label="Breadcrumb" class="mb-4 text-sm text-slate-300">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li>
+          <NuxtLink to="/" class="hover:text-white">Home</NuxtLink>
+        </li>
+        <li>/</li>
+        <li>
+          <NuxtLink to="/landing-pages" class="hover:text-white">Service Areas</NuxtLink>
+        </li>
+        <li>/</li>
+        <li class="text-white">Gutter Cleaning {{ city.name }}, CA</li>
+      </ol>
+    </nav>
     <!-- Hero -->
     <section class="bg-slate-900 text-white">
       <div class="mx-auto max-w-6xl px-4 py-16 lg:flex lg:items-center lg:gap-12">
-     
+
         <div class="flex-1">
           <p class="text-sm font-semibold uppercase tracking-wide text-amber-300">
             Gutter Cleaning {{ city.name }}, CA
@@ -33,17 +33,13 @@
           </p>
 
           <div class="mt-8 flex flex-wrap items-center gap-4">
-            <NuxtLink
-                :to="bookingLink"
-                class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition"
-            >
+            <NuxtLink :to="bookingLink"
+              class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition">
               Get Instant Quote
             </NuxtLink>
 
-            <a
-                href="tel:+13237095357"
-                class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold border border-amber-300/70 text-amber-100 hover:bg-white/10 transition"
-            >
+            <a href="tel:+13237095357"
+              class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold border border-amber-300/70 text-amber-100 hover:bg-white/10 transition">
               Call (323) 709-5357
             </a>
 
@@ -86,19 +82,15 @@
             </p>
 
             <div class="mt-5">
-              <NuxtLink
-                  :to="bookingLink"
-                  class="inline-flex w-full items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition"
-              >
+              <NuxtLink :to="bookingLink"
+                class="inline-flex w-full items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition">
                 Get Instant Quote
               </NuxtLink>
             </div>
 
             <div class="mt-3">
-              <a
-                  href="tel:+13237095357"
-                  class="inline-flex w-full items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold border border-slate-200 text-slate-900 hover:bg-slate-50 transition"
-              >
+              <a href="tel:+13237095357"
+                class="inline-flex w-full items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold border border-slate-200 text-slate-900 hover:bg-slate-50 transition">
                 Call (323) 709-5357
               </a>
             </div>
@@ -125,8 +117,9 @@
           </p>
 
           <p class="mt-4 text-sm text-slate-700 sm:text-base">
-  We provide gutter cleaning throughout {{ city.name }}, CA and nearby San Gabriel Valley communities, with straightforward pricing and full cleanup after service.
-</p>
+            We provide gutter cleaning throughout {{ city.name }}, CA and nearby San Gabriel Valley communities, with
+            straightforward pricing and full cleanup after service.
+          </p>
           <p class="mt-4 text-sm text-slate-700 sm:text-base">
             In {{ city.name }}, seasonal leaf drop and wind-driven debris can clog gutters quickly.
             When gutters overflow, water can damage fascia, siding, and foundations.
@@ -165,11 +158,7 @@
           </p>
 
           <div class="mt-4 grid grid-cols-2 gap-2 text-sm text-slate-700 sm:grid-cols-3">
-            <span
-                v-for="area in city.areas"
-                :key="area"
-                class="rounded-full bg-slate-50 px-3 py-1"
-            >
+            <span v-for="area in city.areas" :key="area" class="rounded-full bg-slate-50 px-3 py-1">
               {{ area }}
             </span>
           </div>
@@ -190,10 +179,8 @@
             </p>
           </div>
 
-          <NuxtLink
-              :to="bookingLink"
-              class="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition"
-          >
+          <NuxtLink :to="bookingLink"
+            class="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition">
             Schedule a Cleaning
           </NuxtLink>
         </div>
@@ -261,47 +248,35 @@
           </p>
 
           <div class="mt-6">
-            <NuxtLink
-                :to="bookingLink"
-                class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition"
-            >
+            <NuxtLink :to="bookingLink"
+              class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition">
               Schedule Your Cleaning
             </NuxtLink>
           </div>
         </div>
       </div>
     </section>
-    <BookingSteps
-        :cta-to="bookingLink"
-        cta-label="Get Instant Quote"
-        cta-note="Most bookings take under 60 seconds."
-    />
+    <BookingSteps :cta-to="bookingLink" cta-label="Get Instant Quote" cta-note="Most bookings take under 60 seconds." />
 
-    <TestimonialCards
-        :kicker="`Homeowners in and around ${city.name}`"
-        title="Clean gutters. Clear pricing. Easy booking."
-        subtitle="A few quick notes from customers after service."
-        :items="testimonials"
-    />
+    <TestimonialCards :kicker="`Homeowners in and around ${city.name}`"
+      title="Clean gutters. Clear pricing. Easy booking." subtitle="A few quick notes from customers after service."
+      :items="testimonials" />
 
     <section class="mx-auto max-w-6xl px-4 py-12">
-  <h2 class="text-xl font-semibold text-slate-900">
-    Nearby Service Areas
-  </h2>
+      <h2 class="text-xl font-semibold text-slate-900">
+        Nearby Service Areas
+      </h2>
 
-  <p class="mt-2 text-sm text-slate-600">
-    We also provide gutter cleaning services in nearby areas:
-  </p>
+      <p class="mt-2 text-sm text-slate-600">
+        We also provide gutter cleaning services in nearby areas:
+      </p>
 
-  <div class="mt-4 flex flex-wrap gap-2">
-  <NuxtLink
-  v-for="nearby in nearbyCities"
-  :key="nearby.slug"
-  :to="`/gutter-cleaning-${nearby.slug}-ca`"
->
-  {{ nearby.name }}
-        </NuxtLink> </div>
-</section>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <NuxtLink v-for="nearby in nearbyCities" :key="nearby.slug" :to="`/gutter-cleaning-${nearby.slug}-ca`">
+          {{ nearby.name }}
+        </NuxtLink>
+      </div>
+    </section>
 
     <!-- FAQ -->
     <section class="bg-white">
@@ -311,11 +286,7 @@
         </h2>
 
         <div class="mt-8 grid gap-6 md:grid-cols-2">
-          <div
-              v-for="item in faq"
-              :key="item.q"
-              class="rounded-2xl border border-slate-200 bg-slate-50 p-6"
-          >
+          <div v-for="item in faq" :key="item.q" class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <h3 class="text-base font-semibold text-slate-900">{{ item.q }}</h3>
             <p class="mt-2 text-sm text-slate-700">{{ item.a }}</p>
           </div>
@@ -333,24 +304,18 @@
           <p class="mt-3 text-slate-200">Flat-rate pricing. Fast scheduling. No upsells.</p>
 
           <div class="mt-6 flex flex-wrap gap-3">
-            <NuxtLink
-                :to="bookingLink"
-                class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition"
-            >
+            <NuxtLink :to="bookingLink"
+              class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition">
               Get Instant Quote
             </NuxtLink>
 
-            <a
-                href="tel:+13237095357"
-                class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold border border-amber-300/70 text-amber-100 hover:bg-white/10 transition"
-            >
+            <a href="tel:+13237095357"
+              class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold border border-amber-300/70 text-amber-100 hover:bg-white/10 transition">
               Call (323) 709-5357
             </a>
 
-            <a
-                href="#booking"
-                class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-amber-100 hover:bg-white/10 transition"
-            >
+            <a href="#booking"
+              class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-amber-100 hover:bg-white/10 transition">
               Jump to booking form →
             </a>
           </div>
@@ -371,7 +336,7 @@
 
         <div class="mt-8">
           <ClientOnly>
-            <BookFormOld :prefill-city="city.name" />
+            <BookForm:prefill-city="city.name" />
             <template #fallback>
               <div class="rounded-2xl border border-slate-200 bg-white p-6">
                 <p class="text-sm text-slate-700">Loading booking form…</p>
@@ -389,10 +354,8 @@
       <h1 class="text-2xl font-bold text-slate-900">City page not found</h1>
       <p class="mt-3 text-slate-600">That city isn’t in our service list yet.</p>
       <div class="mt-6">
-        <NuxtLink
-            to="/booking"
-            class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition"
-        >
+        <NuxtLink to="/booking"
+          class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold bg-amber-400 text-slate-900 hover:bg-amber-300 transition">
           Go to Booking
         </NuxtLink>
       </div>
@@ -405,7 +368,7 @@ import { computed } from "vue";
 import { useHead, useRoute, useRuntimeConfig, useSeoMeta } from "#imports";
 
 import StickyCtaBar from "~/components/StickyCtaBar.vue";
-import BookFormOld from "~/components/BookForm.old.vue";
+import BookForm from "~/components/BookForm.vue";
 import TestimonialCards from "~/components/TestimonialCards.vue";
 import BookingSteps from "~/components/BookingSteps.vue";
 import {
@@ -503,7 +466,7 @@ const SERVICE_AREA_RADIUS_M = 40234;
 
 const metaTitle = computed(() => {
   if (city.value?.metaTitle) return city.value.metaTitle;
-return `Gutter Cleaning in ${cityName.value}, CA | ClearFlow Gutter Services`;
+  return `Gutter Cleaning in ${cityName.value}, CA | ClearFlow Gutter Services`;
 });
 
 const metaDescription = computed(() => {
@@ -516,136 +479,137 @@ const jsonLd = computed(() => {
   if (!city.value) return null;
 
 
-const breadcrumb = {
-  "@type": "BreadcrumbList",
-  "@id": `${pageUrl.value}#breadcrumb`,
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: baseUrl.value,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Service Areas",
-      item: `${baseUrl.value}/landing-pages`,
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: `Gutter Cleaning ${city.value.name}`,
-      item: pageUrl.value,
-    },
-  ],
-};
-
-const business = {
-  "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
-  "@id": `${baseUrl.value}#business`,
-  name: "ClearFlow Gutter Services",
-  url: baseUrl.value,
-  logo: `${baseUrl.value}/favicon.ico`,
-  image: `${baseUrl.value}/favicon.ico`,
-  telephone: "+1-323-709-5357",
-  description:
-    "Professional gutter cleaning with flat-rate pricing and full debris removal throughout the San Gabriel Valley foothill communities.",
-  priceRange: "$200-$475+",
-  areaServed: [
-    {
-      "@type": "City",
-      name: city.value.name,
-      address: {
-        "@type": "PostalAddress",
-        addressRegion: "CA",
-        addressCountry: "US",
-      },
-    },
-    {
-      "@type": "GeoCircle",
-      geoMidpoint: {
-        "@type": "GeoCoordinates",
-        latitude: SERVICE_AREA_CENTER.lat,
-        longitude: SERVICE_AREA_CENTER.lng,
-      },
-      geoRadius: SERVICE_AREA_RADIUS_M,
-    },
-  ],
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: "Gutter Cleaning Services",
+  const breadcrumb = {
+    "@type": "BreadcrumbList",
+    "@id": `${pageUrl.value}#breadcrumb`,
     itemListElement: [
       {
-        "@type": "Offer",
-        name: "Single-story gutter cleaning",
-        price: "200",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-        url: pageUrl.value,
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: baseUrl.value,
       },
       {
-        "@type": "Offer",
-        name: "Two-story gutter cleaning",
-        price: "300",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-        url: pageUrl.value,
+        "@type": "ListItem",
+        position: 2,
+        name: "Service Areas",
+        item: `${baseUrl.value}/landing-pages`,
       },
       {
-        "@type": "Offer",
-        name: "300+ ft gutter cleaning",
-        price: "475",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-        url: pageUrl.value,
+        "@type": "ListItem",
+        position: 3,
+        name: `Gutter Cleaning ${city.value.name}`,
+        item: pageUrl.value,
       },
     ],
-  },
-  makesOffer: {
-    "@type": "Service",
-    name: `Gutter Cleaning in ${city.value.name}, CA`,
-    areaServed: {
-      "@type": "City",
-      name: city.value.name,
-    },
-    provider: {
-      "@id": `${baseUrl.value}#business`,
-    },
-  },
-  potentialAction: {
-    "@type": "ReserveAction",
-    name: "Book Gutter Cleaning",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${baseUrl.value}/booking?city=${encodeURIComponent(city.value.name)}`,
-      actionPlatform: [
-        "http://schema.org/DesktopWebPlatform",
-        "http://schema.org/MobileWebPlatform",
+  };
+
+  const business = {
+    "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
+    "@id": `${baseUrl.value}#business`,
+    name: "ClearFlow Gutter Services",
+    url: baseUrl.value,
+    logo: `${baseUrl.value}/favicon.ico`,
+    image: `${baseUrl.value}/favicon.ico`,
+    telephone: "+1-323-709-5357",
+    description:
+      "Professional gutter cleaning with flat-rate pricing and full debris removal throughout the San Gabriel Valley foothill communities.",
+    priceRange: "$200-$475+",
+    areaServed: [
+      {
+        "@type": "City",
+        name: city.value.name,
+        address: {
+          "@type": "PostalAddress",
+          addressRegion: "CA",
+          addressCountry: "US",
+        },
+      },
+      {
+        "@type": "GeoCircle",
+        geoMidpoint: {
+          "@type": "GeoCoordinates",
+          latitude: SERVICE_AREA_CENTER.lat,
+          longitude: SERVICE_AREA_CENTER.lng,
+        },
+        geoRadius: SERVICE_AREA_RADIUS_M,
+      },
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Gutter Cleaning Services",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          name: "Single-story gutter cleaning",
+          price: "200",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: pageUrl.value,
+        },
+        {
+          "@type": "Offer",
+          name: "Two-story gutter cleaning",
+          price: "300",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: pageUrl.value,
+        },
+        {
+          "@type": "Offer",
+          name: "300+ ft gutter cleaning",
+          price: "475",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: pageUrl.value,
+        },
       ],
     },
-  },
-};
- 
+    makesOffer: {
+      "@type": "Service",
+      name: `Gutter Cleaning in ${city.value.name}, CA`,
+      areaServed: {
+        "@type": "City",
+        name: city.value.name,
+      },
+      provider: {
+        "@id": `${baseUrl.value}#business`,
+      },
+    },
+    potentialAction: {
+      "@type": "ReserveAction",
+      name: "Book Gutter Cleaning",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${baseUrl.value}/booking?city=${encodeURIComponent(city.value.name)}`,
+        actionPlatform: [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
+  };
+
   const faqPage =
     faq.value.length > 0
       ? {
-          "@type": "FAQPage",
-          "@id": `${pageUrl.value}#faq`,
-          mainEntity: faq.value.map((item) => ({
-            "@type": "Question",
-            name: item.q,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: item.a,
-            },
-          })),
-        }
+        "@type": "FAQPage",
+        "@id": `${pageUrl.value}#faq`,
+        mainEntity: faq.value.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.a,
+          },
+        })),
+      }
       : null;
 
   return {
     "@context": "https://schema.org",
-      "@graph": faqPage ? [business, faqPage, breadcrumb] : [business, breadcrumb],  };
+    "@graph": faqPage ? [business, faqPage, breadcrumb] : [business, breadcrumb],
+  };
 });
 
 useSeoMeta(() => {
@@ -679,11 +643,11 @@ useHead(() => {
     link: [{ rel: "canonical", href: pageUrl.value }],
     script: jsonLd.value
       ? [
-          {
-            type: "application/ld+json",
-            children: JSON.stringify(jsonLd.value),
-          },
-        ]
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(jsonLd.value),
+        },
+      ]
       : [],
   };
 });
