@@ -33,7 +33,7 @@ const plans = [
     description: 'Full customer details for up to 10 leads per month.',
     features: [
       '10 full lead views per month',
-      'Full name, phone, email, and address',
+      'Full name, phone, email, city, ZIP code, and service notesddress',
       'Basic city and date filters',
       'Good for solo contractors',
     ],

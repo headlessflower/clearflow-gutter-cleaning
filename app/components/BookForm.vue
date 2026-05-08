@@ -60,21 +60,7 @@
 
         <!-- Address -->
         <div class="grid gap-4 sm:grid-cols-2">
-            <div class="sm:col-span-2">
-                <label
-                    for="address"
-                    class="block text-sm font-medium text-slate-700"
-                    >Street address</label
-                >
-                <input
-                    v-model.trim="form.address"
-                    id="address"
-                    type="text"
-                    required
-                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-cyan-500 focus:outline-none"
-                />
-            </div>
-            <div>
+                        <div>
                 <label
                     for="city"
                     class="block text-sm font-medium text-slate-700"
@@ -500,7 +486,6 @@ const form = reactive({
     name: "",
     phone: "",
     email: "",
-    address: "",
     city: "",
     zip: "",
     county: "Los Angeles County",
@@ -679,8 +664,10 @@ async function handleSubmit() {
         return (errorMessage.value = "Please enter your phone number.");
     if (!/.+@.+\..+/.test(form.email))
         return (errorMessage.value = "Please enter a valid email.");
-    if (!form.address.trim() || !form.city.trim())
-        return (errorMessage.value = "Please enter your address and city.");
+   if (!form.city.trim() || !form.zip.trim()) {
+  errorMessage.value = 'Please enter your city and ZIP code.'
+  return
+}
     if (!form.preferred_date.trim())
         return (errorMessage.value = "Please choose a preferred date.");
 
@@ -697,7 +684,6 @@ async function handleSubmit() {
             name: form.name,
             phone: form.phone,
             email: form.email,
-            address: form.address,
             city: form.city,
             zip: form.zip || null,
             county: form.county,
@@ -732,7 +718,6 @@ async function handleSubmit() {
             name: "",
             phone: "",
             email: "",
-            address: "",
             city: "",
             zip: "",
             county: "Los Angeles County",

@@ -7,12 +7,7 @@
       </div>
 
       <div class="admin__controls">
-        <input
-            v-model.trim="q"
-            class="admin__search"
-            type="search"
-            placeholder="Search name, phone, email, city…"
-        />
+        <input v-model.trim="q" class="admin__search" type="search" placeholder="Search name, phone, email, city…" />
         <button class="btn btn--ghost" :disabled="loading" @click="refresh">
           Refresh
         </button>
@@ -20,13 +15,8 @@
     </header>
 
     <nav class="tabs" aria-label="Pipeline tabs">
-      <button
-          v-for="t in TABS"
-          :key="t.key"
-          class="tabs__tab"
-          :class="{ 'tabs__tab--active': tab === t.key }"
-          @click="tab = t.key"
-      >
+      <button v-for="t in TABS" :key="t.key" class="tabs__tab" :class="{ 'tabs__tab--active': tab === t.key }"
+        @click="tab = t.key">
         {{ t.label }}
         <span class="tabs__count">{{ counts[t.key] ?? 0 }}</span>
       </button>
@@ -49,152 +39,129 @@
       <div class="tablewrap">
         <table class="table">
           <thead>
-          <tr>
-            <th>Customer</th>
-            <th>City</th>
-            <th>Preferred</th>
-            <th v-if="tab === 'scheduled'">Scheduled for</th>
-            <th>Quote</th>
-            <th>Status</th>
-            <th class="table__actions"></th>
-          </tr>
+            <tr>
+              <th>Customer</th>
+              <th>City</th>
+              <th>Preferred</th>
+              <th v-if="tab === 'scheduled'">Scheduled for</th>
+              <th>Quote</th>
+              <th>Status</th>
+              <th class="table__actions"></th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr v-if="!loading && rows.length === 0">
-            <td colspan="7" class="empty">No results.</td>
-          </tr>
+            <tr v-if="!loading && rows.length === 0">
+              <td colspan="7" class="empty">No results.</td>
+            </tr>
 
-          <tr v-for="r in rows" :key="r.id">
-            <td>
-              <div class="who">
-                <div class="who__name">{{ r.name }}</div>
-                <div class="who__sub">
-                  <a :href="`tel:${r.phone}`">{{ r.phone }}</a>
-                  <span> · </span>
-                  <a :href="`mailto:${r.email}`">{{ r.email }}</a>
-                </div>
-              </div>
-
-              <details class="details">
-                <summary>Details</summary>
-                <div class="details__grid">
-                  <div>
-                    <div class="k">Address</div>
-                    <div class="v">{{ r.address }}</div>
+            <tr v-for="r in rows" :key="r.id">
+              <td>
+                <div class="who">
+                  <div class="who__name">{{ r.name }}</div>
+                  <div class="who__sub">
+                    <a :href="`tel:${r.phone}`">{{ r.phone }}</a>
+                    <span> · </span>
+                    <a :href="`mailto:${r.email}`">{{ r.email }}</a>
                   </div>
-                  <div>
-                    <div class="k">Service</div>
-                    <div class="v">
-                      {{ serviceLabel(r.service_type) }}
-                      <span v-if="r.approx_ft"> · {{ r.approx_ft }} ft</span>
+                </div>
+
+                <details class="details">
+                  <summary>Details</summary>
+                  <div class="details__grid">
+                    <div>
+                      <div class="k">Address</div>
+                      <div class="v">
+                        {{ r.city || 'Unknown city' }}<span v-if="r.zip">, {{ r.zip }}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="k">Service</div>
+                      <div class="v">
+                        {{ serviceLabel(r.service_type) }}
+                        <span v-if="r.approx_ft"> · {{ r.approx_ft }} ft</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="k">Add-ons</div>
+                      <div class="v">{{ (r.add_ons?.length ? r.add_ons.join(", ") : "—") }}</div>
+                    </div>
+                    <div>
+                      <div class="k">Created</div>
+                      <div class="v">{{ fmt(r.created_at) }}</div>
                     </div>
                   </div>
-                  <div>
-                    <div class="k">Add-ons</div>
-                    <div class="v">{{ (r.add_ons?.length ? r.add_ons.join(", ") : "—") }}</div>
-                  </div>
-                  <div>
-                    <div class="k">Created</div>
-                    <div class="v">{{ fmt(r.created_at) }}</div>
-                  </div>
-                </div>
 
-                <div class="notes">
-                  <label class="notes__label">Admin notes</label>
-                  <textarea
-                      class="notes__input"
-                      :value="r.admin_notes || ''"
-                      rows="2"
+                  <div class="notes">
+                    <label class="notes__label">Admin notes</label>
+                    <textarea class="notes__input" :value="r.admin_notes || ''" rows="2"
                       placeholder="Gate code, access notes, follow-up notes…"
-                      @change="onNotesChange(r.id, ($event.target as HTMLTextAreaElement).value)"
-                  />
+                      @change="onNotesChange(r.id, ($event.target as HTMLTextAreaElement).value)" />
+                  </div>
+                </details>
+              </td>
+
+              <td>
+                <div class="cell-main">{{ r.city }}</div>
+                <div class="cell-sub">{{ r.zip || "" }} {{ r.county || "" }}</div>
+              </td>
+
+              <td>
+                <div class="cell-main">{{ r.preferred_date || "—" }}</div>
+                <div class="cell-sub" v-if="r.contacted_at && tab !== 'lead'">
+                  contacted {{ fmt(r.contacted_at) }}
                 </div>
-              </details>
-            </td>
+              </td>
 
-            <td>
-              <div class="cell-main">{{ r.city }}</div>
-              <div class="cell-sub">{{ r.zip || "" }} {{ r.county || "" }}</div>
-            </td>
+              <td v-if="tab === 'scheduled'">
+                <div class="cell-main">{{ r.scheduled_for ? fmt(r.scheduled_for) : "—" }}</div>
+                <div class="cell-sub" v-if="r.scheduled_for">
+                  upcoming
+                </div>
+              </td>
 
-            <td>
-              <div class="cell-main">{{ r.preferred_date || "—" }}</div>
-              <div class="cell-sub" v-if="r.contacted_at && tab !== 'lead'">
-                contacted {{ fmt(r.contacted_at) }}
-              </div>
-            </td>
+              <td>
+                <div class="cell-main">{{ money(r.discounted_total_quote ?? r.total_quote) }}</div>
+                <div class="cell-sub" v-if="r.discounted_total_quote">discounted</div>
+              </td>
 
-            <td v-if="tab === 'scheduled'">
-              <div class="cell-main">{{ r.scheduled_for ? fmt(r.scheduled_for) : "—" }}</div>
-              <div class="cell-sub" v-if="r.scheduled_for">
-                upcoming
-              </div>
-            </td>
+              <td>
+                <span class="pill" :class="`pill--${r.status}`">{{ r.status }}</span>
+              </td>
 
-            <td>
-              <div class="cell-main">{{ money(r.discounted_total_quote ?? r.total_quote) }}</div>
-              <div class="cell-sub" v-if="r.discounted_total_quote">discounted</div>
-            </td>
+              <td class="table__actions">
+                <div class="actions">
+                  <!-- LEAD -->
+                  <button v-if="tab === 'lead'" class="btn btn--primary" :disabled="mutatingId === r.id"
+                    @click="setStatus(r.id, 'contacted')">
+                    Mark contacted
+                  </button>
 
-            <td>
-              <span class="pill" :class="`pill--${r.status}`">{{ r.status }}</span>
-            </td>
+                  <!-- CONTACTED -->
+                  <button v-else-if="tab === 'contacted'" class="btn btn--primary" :disabled="mutatingId === r.id"
+                    @click="openSchedule(r)">
+                    Schedule
+                  </button>
 
-            <td class="table__actions">
-              <div class="actions">
-                <!-- LEAD -->
-                <button
-                    v-if="tab === 'lead'"
-                    class="btn btn--primary"
-                    :disabled="mutatingId === r.id"
-                    @click="setStatus(r.id, 'contacted')"
-                >
-                  Mark contacted
-                </button>
+                  <!-- SCHEDULED -->
+                  <button v-else-if="tab === 'scheduled'" class="btn btn--primary" :disabled="mutatingId === r.id"
+                    @click="setStatus(r.id, 'completed')">
+                    Mark completed
+                  </button>
 
-                <!-- CONTACTED -->
-                <button
-                    v-else-if="tab === 'contacted'"
-                    class="btn btn--primary"
-                    :disabled="mutatingId === r.id"
-                    @click="openSchedule(r)"
-                >
-                  Schedule
-                </button>
+                  <!-- COMPLETED -->
+                  <button v-else class="btn btn--ghost" :disabled="mutatingId === r.id"
+                    @click="setStatus(r.id, 'scheduled')" title="Reopen as scheduled">
+                    Reopen
+                  </button>
 
-                <!-- SCHEDULED -->
-                <button
-                    v-else-if="tab === 'scheduled'"
-                    class="btn btn--primary"
-                    :disabled="mutatingId === r.id"
-                    @click="setStatus(r.id, 'completed')"
-                >
-                  Mark completed
-                </button>
-
-                <!-- COMPLETED -->
-                <button
-                    v-else
-                    class="btn btn--ghost"
-                    :disabled="mutatingId === r.id"
-                    @click="setStatus(r.id, 'scheduled')"
-                    title="Reopen as scheduled"
-                >
-                  Reopen
-                </button>
-
-                <button
-                    class="btn btn--ghost"
-                    :disabled="mutatingId === r.id"
-                    @click="setStatus(r.id, 'canceled')"
-                    title="Cancel"
-                >
-                  Cancel
-                </button>
-              </div>
-            </td>
-          </tr>
+                  <button class="btn btn--ghost" :disabled="mutatingId === r.id" @click="setStatus(r.id, 'canceled')"
+                    title="Cancel">
+                    Cancel
+                  </button>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -235,7 +202,7 @@ definePageMeta({
   middleware: ["admin"],
 });
 
-import type {Database} from "~~/types/supabase"
+import type { Database } from "~~/types/supabase"
 
 const supabase = useSupabaseClient<Database>();
 
@@ -294,11 +261,11 @@ function applyClientSearch(data: BookingRow[]) {
 
   return data.filter((r) => {
     return (
-        (r.name || "").toLowerCase().includes(s) ||
-        (r.phone || "").toLowerCase().includes(s) ||
-        (r.email || "").toLowerCase().includes(s) ||
-        (r.city || "").toLowerCase().includes(s) ||
-        (r.address || "").toLowerCase().includes(s)
+      (r.name || "").toLowerCase().includes(s) ||
+      (r.phone || "").toLowerCase().includes(s) ||
+      (r.email || "").toLowerCase().includes(s) ||
+      (r.city || "").toLowerCase().includes(s) ||
+      (r.zip || '').toLowerCase().includes(s)
     );
   });
 }
@@ -376,11 +343,11 @@ async function setStatus(id: string, next: Status) {
 
   try {
     const { data, error: e } = await supabase
-        .from("bookings")
-        .update({ status: next })
-        .eq("id", id)
-        .select("id,status,contacted_at,scheduled_for,completed_at")
-        .maybeSingle(); // ✅ allows 0 or 1 row without throwing
+      .from("bookings")
+      .update({ status: next })
+      .eq("id", id)
+      .select("id,status,contacted_at,scheduled_for,completed_at")
+      .maybeSingle(); // ✅ allows 0 or 1 row without throwing
 
     console.log("setStatus result:", { id, next, data, e });
 
@@ -389,7 +356,7 @@ async function setStatus(id: string, next: Status) {
     // If no row came back, update didn't happen (usually RLS or wrong id)
     if (!data) {
       throw new Error(
-          "Update returned no row. This usually means Row Level Security blocked the update or the id did not match any row."
+        "Update returned no row. This usually means Row Level Security blocked the update or the id did not match any row."
       );
     }
 
@@ -416,9 +383,9 @@ async function onNotesChange(id: string, value: string) {
     mutatingId.value = id;
     try {
       const { error: e } = await supabase
-          .from("bookings")
-          .update({ admin_notes: value })
-          .eq("id", id);
+        .from("bookings")
+        .update({ admin_notes: value })
+        .eq("id", id);
 
       if (e) throw new Error(e.message);
       await refresh();
@@ -475,18 +442,18 @@ async function confirmSchedule() {
     const iso = new Date(scheduledForLocal.value).toISOString();
 
     const { data, error: e } = await supabase
-        .from("bookings")
-        .update({ status: "scheduled", scheduled_for: iso })
-        .eq("id", id)
-        .select("id,status,scheduled_for,contacted_at")
-        .maybeSingle();
+      .from("bookings")
+      .update({ status: "scheduled", scheduled_for: iso })
+      .eq("id", id)
+      .select("id,status,scheduled_for,contacted_at")
+      .maybeSingle();
 
     console.log("confirmSchedule result:", { id, iso, data, e });
 
     if (e) throw new Error(e.message);
     if (!data) {
       throw new Error(
-          "Schedule update returned no row. This usually means RLS blocked the update or the id did not match."
+        "Schedule update returned no row. This usually means RLS blocked the update or the id did not match."
       );
     }
 
@@ -525,6 +492,7 @@ async function confirmSchedule() {
   font-size: 1.5rem;
   font-weight: 900;
 }
+
 .admin__title p {
   margin: 0.25rem 0 0;
   color: #475569;
@@ -563,10 +531,12 @@ async function confirmSchedule() {
   gap: 0.5rem;
   align-items: center;
 }
+
 .tabs__tab--active {
   border-color: rgba(251, 191, 36, 0.9);
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
 }
+
 .tabs__count {
   display: inline-flex;
   min-width: 1.6rem;
@@ -595,15 +565,23 @@ async function confirmSchedule() {
   gap: 1rem;
   color: #475569;
 }
-.err { color: #b91c1c; font-weight: 700; }
 
-.tablewrap { overflow-x: auto; }
+.err {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.tablewrap {
+  overflow-x: auto;
+}
+
 .table {
   width: 100%;
   min-width: 980px;
   border-collapse: separate;
   border-spacing: 0;
 }
+
 .table th {
   text-align: left;
   font-size: 0.85rem;
@@ -612,24 +590,46 @@ async function confirmSchedule() {
   background: #f8fafc;
   border-bottom: 1px solid #f1f5f9;
 }
+
 .table td {
   padding: 0.9rem 1rem;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: top;
 }
-.table__actions { width: 18rem; }
+
+.table__actions {
+  width: 18rem;
+}
 
 .empty {
   padding: 2rem 1rem;
   color: #64748b;
 }
 
-.who__name { font-weight: 900; }
-.who__sub { color: #475569; font-size: 0.9rem; }
-.who__sub a { color: inherit; text-decoration: underline; text-decoration-color: rgba(100,116,139,0.5); }
+.who__name {
+  font-weight: 900;
+}
 
-.cell-main { font-weight: 800; }
-.cell-sub { color: #64748b; font-size: 0.85rem; margin-top: 0.25rem; }
+.who__sub {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.who__sub a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(100, 116, 139, 0.5);
+}
+
+.cell-main {
+  font-weight: 800;
+}
+
+.cell-sub {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
 
 .pill {
   display: inline-flex;
@@ -640,13 +640,43 @@ async function confirmSchedule() {
   font-weight: 900;
   font-size: 0.8rem;
 }
-.pill--lead { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
-.pill--contacted { background: #ecfeff; border-color: #a5f3fc; color: #155e75; }
-.pill--scheduled { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; }
-.pill--completed { background: #ecfdf5; border-color: #bbf7d0; color: #166534; }
-.pill--canceled { background: #f8fafc; border-color: #e2e8f0; color: #334155; }
 
-.actions { display: flex; justify-content: flex-end; gap: 0.5rem; flex-wrap: wrap; }
+.pill--lead {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #9a3412;
+}
+
+.pill--contacted {
+  background: #ecfeff;
+  border-color: #a5f3fc;
+  color: #155e75;
+}
+
+.pill--scheduled {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #3730a3;
+}
+
+.pill--completed {
+  background: #ecfdf5;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.pill--canceled {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #334155;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 
 .btn {
   border-radius: 999px;
@@ -656,27 +686,63 @@ async function confirmSchedule() {
   background: #fff;
   cursor: pointer;
 }
+
 .btn--primary {
   background: #fbbf24;
-  border-color: rgba(251,191,36,0.85);
+  border-color: rgba(251, 191, 36, 0.85);
   color: #0f172a;
 }
-.btn--primary:hover { background: #fcd34d; }
-.btn--ghost:hover { background: #f8fafc; }
 
-.details { margin-top: 0.6rem; }
-.details summary { cursor: pointer; color: #334155; font-weight: 800; }
+.btn--primary:hover {
+  background: #fcd34d;
+}
+
+.btn--ghost:hover {
+  background: #f8fafc;
+}
+
+.details {
+  margin-top: 0.6rem;
+}
+
+.details summary {
+  cursor: pointer;
+  color: #334155;
+  font-weight: 800;
+}
+
 .details__grid {
   margin-top: 0.8rem;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
-.k { font-size: 0.75rem; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: #64748b; }
-.v { color: #0f172a; }
 
-.notes { margin-top: 0.85rem; }
-.notes__label { display: block; font-size: 0.75rem; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: #64748b; }
+.k {
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.v {
+  color: #0f172a;
+}
+
+.notes {
+  margin-top: 0.85rem;
+}
+
+.notes__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
 .notes__input {
   margin-top: 0.35rem;
   width: 100%;
@@ -696,6 +762,7 @@ async function confirmSchedule() {
   padding: 1rem;
   z-index: 80;
 }
+
 .modal__card {
   width: min(36rem, 100%);
   background: #fff;
@@ -703,23 +770,45 @@ async function confirmSchedule() {
   border: 1px solid #e2e8f0;
   padding: 1rem;
 }
+
 .modal__head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
-.modal__head h2 { margin: 0; font-size: 1.25rem; font-weight: 900; }
-.modal__sub { margin: 0.5rem 0 0.75rem; color: #475569; }
 
-.field { display: grid; gap: 0.35rem; }
-.field__label { font-weight: 900; color: #0f172a; }
+.modal__head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.modal__sub {
+  margin: 0.5rem 0 0.75rem;
+  color: #475569;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field__label {
+  font-weight: 900;
+  color: #0f172a;
+}
+
 .field__input {
   border-radius: 0.9rem;
   border: 1px solid #e2e8f0;
   padding: 0.7rem 0.75rem;
 }
-.field__hint { font-size: 0.9rem; color: #64748b; }
+
+.field__hint {
+  font-size: 0.9rem;
+  color: #64748b;
+}
 
 .modal__actions {
   margin-top: 1rem;

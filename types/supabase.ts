@@ -17,7 +17,6 @@ export type Database = {
       bookings: {
         Row: {
           add_ons: Json
-          address: string
           admin_notes: string | null
           approx_ft: number | null
           city: string
@@ -46,7 +45,6 @@ export type Database = {
         }
         Insert: {
           add_ons?: Json
-          address: string
           admin_notes?: string | null
           approx_ft?: number | null
           city: string
@@ -75,7 +73,6 @@ export type Database = {
         }
         Update: {
           add_ons?: Json
-          address?: string
           admin_notes?: string | null
           approx_ft?: number | null
           city?: string
@@ -104,12 +101,173 @@ export type Database = {
         }
         Relationships: []
       }
+      contractor_profiles: {
+        Row: {
+          accepted_terms: boolean | null
+          accepted_terms_at: string | null
+          company_name: string | null
+          contact_name: string | null
+          created_at: string | null
+          id: string
+          monthly_lead_view_limit: number | null
+          monthly_lead_views_used: number | null
+          phone: string | null
+          service_area: string[] | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          terms_version: string | null
+        }
+        Insert: {
+          accepted_terms?: boolean | null
+          accepted_terms_at?: string | null
+          company_name?: string | null
+          contact_name?: string | null
+          created_at?: string | null
+          id: string
+          monthly_lead_view_limit?: number | null
+          monthly_lead_views_used?: number | null
+          phone?: string | null
+          service_area?: string[] | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          terms_version?: string | null
+        }
+        Update: {
+          accepted_terms?: boolean | null
+          accepted_terms_at?: string | null
+          company_name?: string | null
+          contact_name?: string | null
+          created_at?: string | null
+          id?: string
+          monthly_lead_view_limit?: number | null
+          monthly_lead_views_used?: number | null
+          phone?: string | null
+          service_area?: string[] | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          terms_version?: string | null
+        }
+        Relationships: []
+      }
+      lead_claims: {
+        Row: {
+          booking_id: string | null
+          claimed_at: string | null
+          contacted_at: string | null
+          contractor_id: string | null
+          expires_at: string | null
+          id: string
+          notes: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          claimed_at?: string | null
+          contacted_at?: string | null
+          contractor_id?: string | null
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          claimed_at?: string | null
+          contacted_at?: string | null
+          contractor_id?: string | null
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_claims_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_views: {
+        Row: {
+          booking_id: string
+          contractor_id: string
+          id: string
+          viewed_at: string
+        }
+        Insert: {
+          booking_id: string
+          contractor_id: string
+          id?: string
+          viewed_at?: string
+        }
+        Update: {
+          booking_id?: string
+          contractor_id?: string
+          id?: string
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_views_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_lead: {
+        Args: { p_booking_id: string }
+        Returns: {
+          booking_id: string | null
+          claimed_at: string | null
+          contacted_at: string | null
+          contractor_id: string | null
+          expires_at: string | null
+          id: string
+          notes: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "lead_claims"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      mark_lead_contacted: {
+        Args: { p_booking_id: string }
+        Returns: {
+          booking_id: string | null
+          claimed_at: string | null
+          contacted_at: string | null
+          contractor_id: string | null
+          expires_at: string | null
+          id: string
+          notes: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "lead_claims"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      record_lead_view: { Args: { p_booking_id: string }; Returns: Json }
     }
     Enums: {
       service_type: "single_story" | "two_story" | "multi_story"

@@ -265,7 +265,7 @@ onMounted(fetchLeadTeasers)
           <h1> Local gutter cleaning jobs for contractors</h1>
           <p class="hero-description">
             View active customer quote requests in your area. Subscribe to unlock full customer
-            details, contact info, addresses, notes, and service requests.
+            details, contact info, city, zip, notes, and service requests.
           </p>
 
           <div class="hero-actions">

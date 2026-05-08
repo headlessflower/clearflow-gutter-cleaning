@@ -9,7 +9,7 @@ const plans = [
     description: 'Perfect for solo contractors getting started with leads.',
     features: [
       '10 full lead views per month',
-      'Full customer details (name, phone, email, address)',
+      'Customer contact details, city, ZIP code, quote notes, and service request information',
       'Basic filters (city, date)',
       'Cancel anytime',
     ],

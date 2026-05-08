@@ -47,7 +47,7 @@ const plans = [
     features: [
       '10 full lead views per month',
       'Full customer details after unlock',
-      'Phone, email, address, and notes',
+      'Phone, email, city, zip, and  service notes',
       'Basic city and date filters',
     ],
   },

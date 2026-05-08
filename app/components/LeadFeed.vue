@@ -21,7 +21,6 @@ type LeadRow = {
   name: string | null
   phone: string | null
   email: string | null
-  address: string | null
   city: string | null
   zip: string | null
   county: string | null
@@ -319,7 +318,7 @@ async function fetchLeads() {
   const { data, error } = await supabase
     .from('bookings')
     .select(
-      'id, name, phone, email, address, city, zip, county, preferred_date, service_type, approx_ft, add_ons, water_access, gutter_guard_removal, notes, total_quote, discounted_total_quote, maintenance_plan, status, created_at',
+      'id, name, phone, email,  city, zip, county, preferred_date, service_type, approx_ft, add_ons, water_access, gutter_guard_removal, notes, total_quote, discounted_total_quote, maintenance_plan, status, created_at',
     )
     .eq('status', 'lead')
     .order('created_at', { ascending: false })
@@ -692,8 +691,8 @@ onMounted(loadPage)
             <dd>{{ selectedLead.email || 'Not provided' }}</dd>
           </div>
           <div>
-            <dt>Address</dt>
-            <dd>{{ selectedLead.address || 'Not provided' }}</dd>
+           <strong>
+              {{ selectedLead.city || 'Los Angeles area' }}<span v-if="selectedLead.zip">, {{ selectedLead.zip }}</span></strong>
           </div>
           <div>
             <dt>Requested date</dt>

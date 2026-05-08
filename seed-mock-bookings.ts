@@ -258,7 +258,6 @@ function buildMockBooking() {
     name: `${first} ${last}`,
     phone: fakePhone(),
     email: fakeEmail(first, last),
-    address: `${streetNumber} ${street}`,
     city: area.city,
     zip,
     county: area.county ?? 'Los Angeles County',

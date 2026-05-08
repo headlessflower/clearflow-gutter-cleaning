@@ -45,9 +45,10 @@
         </div>
 
         <div class="info-box">
-          <span>Address</span>
-          <strong>{{ lead.address || 'Not provided' }}</strong>
-        </div>
+         <span>Service area</span>
+  <strong>
+    {{ lead.city || 'Los Angeles area' }}<span v-if="lead.zip"> {{ lead.zip }}</span>
+  </strong>        </div>
 
         <div class="info-box">
           <span>Requested date</span>
@@ -174,7 +175,6 @@ type BookingLead = {
   name: string | null
   phone: string | null
   email: string | null
-  address: string | null
   city: string | null
   zip: string | null
   county: string | null
@@ -260,7 +260,6 @@ async function loadLead() {
       name,
       phone,
       email,
-      address,
       city,
       zip,
       county,
