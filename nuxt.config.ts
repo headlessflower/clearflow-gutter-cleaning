@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { cityLandingPages } from "./data/cityLandingPages"; // adjust if your path differs
 
 const cityRoutes = Object.keys(cityLandingPages).map(
-    (slug) => `/gutter-cleaning-${slug}-ca`
+  (slug) => `/gutter-cleaning-${slug}-ca`
 );
 
 export default defineNuxtConfig({
@@ -41,4 +41,9 @@ export default defineNuxtConfig({
   gtag: {
     enabled: process.env.NODE_ENV === 'production',
   },
+
+  sourcemap: {
+    client: true,
+    server: true
+  }
 });

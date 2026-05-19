@@ -443,7 +443,7 @@
 
 <script setup lang="ts">
 const supabase = useSupabaseClient();
-const trackEvent = useTrackEvent();
+//const trackEvent = useTrackEvent();
 
 type ServiceType = "single_story" | "two_story" | "multi_story";
 type AddOnKey =
@@ -710,7 +710,7 @@ async function handleSubmit() {
             return;
         }
 
-        trackBookingSubmitted();
+        //trackBookingSubmitted();
         success.value = true;
 
         // reset
