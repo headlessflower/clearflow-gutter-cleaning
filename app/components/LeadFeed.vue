@@ -847,6 +847,7 @@ onMounted(loadPage)
   margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 1.3rem;
+  box-sizing: border-box;
 }
 
 @media (max-width: 1100px) {
@@ -868,6 +869,7 @@ onMounted(loadPage)
 .field {
   display: grid;
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .field span {
@@ -878,6 +880,8 @@ onMounted(loadPage)
 
 .field input,
 .field select {
+  width: 100%;
+  min-width: 0;
   min-height: 3rem;
   border: 1px solid rgba(16, 32, 24, 0.12);
   border-radius: 1rem;
