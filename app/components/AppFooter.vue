@@ -4,13 +4,13 @@
       <div class="footer__brand">
         <p class="footer__name">ClearFlow Gutter Services</p>
         <p class="footer__tagline">
-          Professional gutter cleaning for homes in Southern California.
+          A Los Angeles County directory for finding gutter cleaning options and requesting local cleaner contact.
         </p>
       </div>
 
       <nav class="footer__links" aria-label="Footer">
-        <NuxtLink :to="bookingsHref" class="footer__link">Book Service</NuxtLink>
-        <NuxtLink :to="jobsHref" class="footer__link">Jobs</NuxtLink>
+        <NuxtLink :to="bookingsHref" class="footer__link">Find Cleaners</NuxtLink>
+        <NuxtLink :to="jobsHref" class="footer__link">For Cleaners</NuxtLink>
       </nav>
 
       <div class="footer__meta">

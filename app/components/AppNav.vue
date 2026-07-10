@@ -14,7 +14,7 @@
             class="nav__link"
             active-class="nav__link--active"
         >
-          Book Service
+          Find Cleaners
         </NuxtLink>
 
         <NuxtLink
@@ -22,7 +22,7 @@
             class="nav__link"
             active-class="nav__link--active"
         >
-          Jobs
+          For Cleaners
         </NuxtLink>
       </nav>
 
@@ -30,7 +30,7 @@
       <div class="nav__right">
         <!-- Desktop CTA -->
         <NuxtLink :to="bookingsHref" class="nav__cta">
-          Get Quote
+          Request Quotes
         </NuxtLink>
 
         <!-- Mobile toggle -->
@@ -60,7 +60,7 @@
             active-class="nav__mobile-link--active"
             @click="close()"
         >
-          Book Service
+          Find Cleaners
         </NuxtLink>
 
         <NuxtLink
@@ -69,11 +69,11 @@
             active-class="nav__mobile-link--active"
             @click="close()"
         >
-          Jobs
+          For Cleaners
         </NuxtLink>
 
         <NuxtLink :to="bookingsHref" class="nav__mobile-cta" @click="close()">
-          Get Quote
+          Request Quotes
           <span class="nav__cta-icon" aria-hidden="true">↗</span>
         </NuxtLink>
 

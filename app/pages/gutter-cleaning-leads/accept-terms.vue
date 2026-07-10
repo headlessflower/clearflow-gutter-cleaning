@@ -42,8 +42,16 @@ definePageMeta({
 async function acceptTerms() {
   errorMessage.value = ''
 
-  if (!user.value) {
-    return router.push('/login')
+  let userId = user.value?.id
+
+  if (!userId) {
+    const { data, error } = await supabase.auth.getUser()
+
+    if (error || !data.user) {
+      return router.push('/gutter-cleaning-leads/login')
+    }
+
+    userId = data.user.id
   }
 
   if (!acceptedTerms.value) {
@@ -62,7 +70,7 @@ async function acceptTerms() {
       accepted_terms_at: acceptedAt,
       terms_version: TERMS_VERSION
     })
-    .eq('id', user.value.id)
+    .eq('id', userId)
 
   if (error) {
     errorMessage.value = error.message
@@ -79,6 +87,6 @@ async function acceptTerms() {
   })
 
   loading.value = false
-  router.push('/leads')
+  router.push('/gutter-cleaning-leads/leads')
 }
 </script>

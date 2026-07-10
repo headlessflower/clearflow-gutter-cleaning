@@ -336,7 +336,7 @@
 
         <div class="mt-8">
           <ClientOnly>
-            <BookForm:prefill-city="city.name" />
+            <BookForm :prefill-city="city.name" />
             <template #fallback>
               <div class="rounded-2xl border border-slate-200 bg-white p-6">
                 <p class="text-sm text-slate-700">Loading booking form…</p>

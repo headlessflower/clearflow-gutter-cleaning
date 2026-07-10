@@ -46,7 +46,7 @@
 
             <!-- Form -->
             <div class="lg:col-span-3">
-                <BookForm />
+                <BookForm :prefill-city="cityFromLanding" :prefill-zip="zipFromLanding" />
             </div>
         </section>
     </main>
@@ -65,6 +65,7 @@ useHead({
 });
 const route = useRoute();
 const cityFromLanding = computed(() => String(route.query.city || ""));
+const zipFromLanding = computed(() => String(route.query.zip || ""));
 </script>
 
 <style scoped>

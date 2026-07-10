@@ -17,14 +17,14 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/supabase", 'nuxt-gtag'],
 
   supabase: {
+    url: process.env.SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL,
+    key: process.env.SUPABASE_KEY || process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
     redirect: false,
-    types: "~/types/supabase.ts",
+    types: "~~/types/supabase.ts",
   },
 
   runtimeConfig: {
     public: {
-      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
-      supabaseKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || "https://www.clearflowgutters.pro",
     },

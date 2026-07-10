@@ -445,6 +445,17 @@
 const supabase = useSupabaseClient();
 //const trackEvent = useTrackEvent();
 
+const props = withDefaults(
+    defineProps<{
+        prefillCity?: string;
+        prefillZip?: string;
+    }>(),
+    {
+        prefillCity: "",
+        prefillZip: "",
+    },
+);
+
 type ServiceType = "single_story" | "two_story" | "multi_story";
 type AddOnKey =
     | "heavy_debris"
@@ -501,6 +512,39 @@ const form = reactive({
     maintenance_plan: "" as MaintenancePlan,
     referrals: 0,
 });
+
+const lastAppliedPrefillCity = ref("");
+const lastAppliedPrefillZip = ref("");
+
+watch(
+    () => props.prefillCity,
+    (value) => {
+        const city = String(value || "").trim();
+        if (!city) return;
+        if (form.city.trim() && form.city !== lastAppliedPrefillCity.value) {
+            return;
+        }
+
+        form.city = city;
+        lastAppliedPrefillCity.value = city;
+    },
+    { immediate: true },
+);
+
+watch(
+    () => props.prefillZip,
+    (value) => {
+        const zip = String(value || "").trim();
+        if (!zip) return;
+        if (form.zip.trim() && form.zip !== lastAppliedPrefillZip.value) {
+            return;
+        }
+
+        form.zip = zip;
+        lastAppliedPrefillZip.value = zip;
+    },
+    { immediate: true },
+);
 
 const pending = ref(false);
 const errorMessage = ref<string | null>(null);
@@ -718,8 +762,8 @@ async function handleSubmit() {
             name: "",
             phone: "",
             email: "",
-            city: "",
-            zip: "",
+            city: String(props.prefillCity || "").trim(),
+            zip: String(props.prefillZip || "").trim(),
             county: "Los Angeles County",
             preferred_date: "",
             service_type: "single_story",
