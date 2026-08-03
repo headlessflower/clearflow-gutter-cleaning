@@ -296,6 +296,33 @@
             </div>
         </fieldset>
 
+        <!-- Quicklist contact permission -->
+        <fieldset v-if="quicklistCleaners.length" class="rounded-xl border-2 border-amber-300 bg-amber-50 p-4">
+            <legend class="px-2 text-sm font-semibold text-slate-900">
+                Contact companies on your Quicklist
+            </legend>
+            <label class="mt-2 flex items-start gap-3">
+                <input v-model="form.contact_quicklist_companies" type="checkbox" class="mt-1 h-5 w-5" />
+                <span>
+                    <span class="block text-sm font-semibold text-slate-900">Send my request to selected companies</span>
+                    <span class="mt-1 block text-xs leading-5 text-slate-600">These companies may contact you about this request. You can choose exactly who is included.</span>
+                </span>
+            </label>
+
+            <div class="mt-4 grid gap-2" :class="{ 'opacity-50': !form.contact_quicklist_companies }">
+                <label v-for="cleaner in quicklistCleaners" :key="cleaner.id" class="flex items-center gap-3 rounded-lg border border-amber-200 bg-white p-3">
+                    <input
+                        v-model="form.quicklist_company_ids"
+                        :disabled="!form.contact_quicklist_companies"
+                        :value="cleaner.id"
+                        type="checkbox"
+                    />
+                    <span class="text-sm font-medium text-slate-800">{{ cleaner.companyName }}</span>
+                </label>
+            </div>
+            <NuxtLink class="mt-3 inline-block text-xs font-semibold text-teal-800 underline" to="/quicklist">Edit your Quicklist</NuxtLink>
+        </fieldset>
+
         <!-- Notes -->
         <div>
             <label for="notes" class="block text-sm font-medium text-slate-700"
@@ -442,8 +469,11 @@
 </template>
 
 <script setup lang="ts">
+import { partnerCleaners } from "~~/data/partnerCleaners";
+
 const supabase = useSupabaseClient();
-//const trackEvent = useTrackEvent();
+const { ids: quicklistIds } = useQuicklist();
+const quicklistCleaners = computed(() => partnerCleaners.filter((cleaner) => quicklistIds.value.includes(cleaner.id)));
 
 const props = withDefaults(
     defineProps<{
@@ -511,7 +541,20 @@ const form = reactive({
     // NEW
     maintenance_plan: "" as MaintenancePlan,
     referrals: 0,
+    contact_quicklist_companies: true,
+    quicklist_company_ids: [] as string[],
 });
+
+watch(
+    quicklistIds,
+    (ids) => {
+        const validIds = ids.filter((id) => partnerCleaners.some((cleaner) => cleaner.id === id));
+        const previouslySelected = new Set(form.quicklist_company_ids);
+        form.quicklist_company_ids = validIds.filter((id) => previouslySelected.size === 0 || previouslySelected.has(id));
+        form.contact_quicklist_companies = validIds.length > 0;
+    },
+    { immediate: true },
+);
 
 const lastAppliedPrefillCity = ref("");
 const lastAppliedPrefillZip = ref("");
@@ -670,6 +713,9 @@ function trackBookingSubmitted() {
         currency: "USD",
         preferred_date: form.preferred_date || "unknown",
         approx_ft: approxFt ?? 0,
+        quicklist_size: quicklistIds.value.length,
+        selected_company_count: form.contact_quicklist_companies ? form.quicklist_company_ids.length : 0,
+        selected_company_ids: form.contact_quicklist_companies ? form.quicklist_company_ids.join("|") : "none",
     });
 }
 
@@ -714,6 +760,8 @@ async function handleSubmit() {
 }
     if (!form.preferred_date.trim())
         return (errorMessage.value = "Please choose a preferred date.");
+    if (form.contact_quicklist_companies && quicklistCleaners.value.length && !form.quicklist_company_ids.length)
+        return (errorMessage.value = "Select at least one Quicklist company or turn off company contact.");
 
     pending.value = true;
 
@@ -745,6 +793,9 @@ async function handleSubmit() {
             maintenance_plan: form.maintenance_plan || null,
             referral_count: referralCount,
             status: "lead",
+            contact_quicklist_companies: form.contact_quicklist_companies && form.quicklist_company_ids.length > 0,
+            quicklist_company_ids: form.contact_quicklist_companies ? form.quicklist_company_ids : [],
+            quicklist_size: quicklistIds.value.length,
         };
 
         const { error } = await supabase.from("bookings").insert([payload]);
@@ -754,7 +805,7 @@ async function handleSubmit() {
             return;
         }
 
-        //trackBookingSubmitted();
+        trackBookingSubmitted();
         success.value = true;
 
         // reset
@@ -774,6 +825,8 @@ async function handleSubmit() {
             notes: "",
             maintenance_plan: "",
             referrals: 0,
+            contact_quicklist_companies: quicklistIds.value.length > 0,
+            quicklist_company_ids: [...quicklistIds.value],
         });
     } catch (err: any) {
         console.error(err);

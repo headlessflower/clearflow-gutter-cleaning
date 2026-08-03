@@ -39,7 +39,13 @@
           </div>
         </div>
 
-        <aside class="self-end rounded-lg border border-stone-300 bg-white shadow-sm">
+        <aside class="self-end overflow-hidden rounded-lg border border-stone-300 bg-white shadow-sm">
+          <figure class="relative h-64 overflow-hidden bg-stone-200 sm:h-80 lg:h-72">
+            <img class="h-full w-full object-cover" src="/images/gutter-service-hero.jpg" alt="Gutter professional working safely from a ladder at a residential roofline" width="1600" height="1067" fetchpriority="high" />
+            <figcaption class="absolute bottom-4 left-4 rounded-md bg-stone-950/90 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-white">
+              Local residential specialists
+            </figcaption>
+          </figure>
           <div class="border-b border-stone-200 p-5">
             <p class="text-sm font-black uppercase tracking-[0.2em] text-stone-500">
               Directory Snapshot
@@ -84,10 +90,13 @@
         </div>
 
         <div class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <article v-for="category in serviceCategories" :key="category.title" class="rounded-lg border border-stone-200 bg-[#f7f5ef] p-5">
-            <p class="text-sm font-black uppercase tracking-[0.18em] text-stone-500">{{ category.tag }}</p>
-            <h3 class="mt-3 text-xl font-black">{{ category.title }}</h3>
-            <p class="mt-3 text-sm leading-6 text-stone-700">{{ category.copy }}</p>
+          <article v-for="category in serviceCategories" :key="category.title" class="overflow-hidden rounded-lg border border-stone-200 bg-[#f7f5ef]">
+            <img class="h-40 w-full object-cover" :src="category.image" :alt="category.alt" width="700" height="460" loading="lazy" />
+            <div class="p-5">
+              <p class="text-sm font-black uppercase tracking-[0.18em] text-stone-500">{{ category.tag }}</p>
+              <h3 class="mt-3 text-xl font-black">{{ category.title }}</h3>
+              <p class="mt-3 text-sm leading-6 text-stone-700">{{ category.copy }}</p>
+            </div>
           </article>
         </div>
       </div>
@@ -182,20 +191,28 @@
     </section>
 
     <section id="guide" class="bg-[#f7f5ef] py-14">
-      <div class="mx-auto max-w-7xl px-5 md:px-8">
-        <div class="max-w-3xl">
+      <div class="mx-auto grid max-w-7xl gap-8 px-5 md:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+        <figure class="overflow-hidden rounded-lg border border-stone-300 bg-white shadow-sm">
+          <img class="h-72 w-full object-cover sm:h-96 lg:h-[31rem]" src="/images/la-home-exterior.jpg" alt="Well-maintained home exterior surrounded by mature trees" width="1400" height="933" loading="lazy" />
+          <figcaption class="border-t border-stone-200 px-4 py-3 text-sm font-bold text-stone-600">
+            The right questions help protect every part of your roofline.
+          </figcaption>
+        </figure>
+        <div>
+          <div class="max-w-3xl">
           <p class="text-xs font-black uppercase tracking-[0.22em] text-teal-700">
             Hiring Guide
           </p>
           <h2 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
             Ask better questions before you hire.
           </h2>
-        </div>
-        <div class="mt-8 grid gap-5 lg:grid-cols-3">
-          <article v-for="tip in hiringTips" :key="tip.title" class="rounded-lg border border-stone-300 bg-white p-5">
-            <h3 class="text-xl font-black">{{ tip.title }}</h3>
-            <p class="mt-3 text-sm leading-6 text-stone-700">{{ tip.copy }}</p>
-          </article>
+          </div>
+          <div class="mt-8 grid gap-5">
+            <article v-for="tip in hiringTips" :key="tip.title" class="rounded-lg border border-stone-300 bg-white p-5">
+              <h3 class="text-xl font-black">{{ tip.title }}</h3>
+              <p class="mt-3 text-sm leading-6 text-stone-700">{{ tip.copy }}</p>
+            </article>
+          </div>
         </div>
       </div>
     </section>
@@ -254,21 +271,29 @@ const serviceCategories = [
     tag: "Residential",
     title: "Standard gutter cleaning",
     copy: "For routine debris removal, downspout clearing, and basic roofline checks on single-family homes.",
+    image: "/images/clogged-gutter.jpg",
+    alt: "Dry leaves and debris collected in a residential rain gutter",
   },
   {
     tag: "Urgent",
     title: "Overflow and blockage help",
     copy: "For gutters spilling during rain, backed-up downspouts, or visible water staining near fascia.",
+    image: "/images/gutter-and-downspout.jpg",
+    alt: "Residential gutter and downspout system along a roofline",
   },
   {
     tag: "Complex",
     title: "Two-story and hillside homes",
     copy: "Find cleaners equipped for taller access, uneven lots, steep driveways, and longer gutter runs.",
+    image: "/images/gutter-service-hero.jpg",
+    alt: "Roof professional working beside an extension ladder",
   },
   {
     tag: "Recurring",
     title: "Seasonal maintenance",
     copy: "Compare cleaners who can support spring, fall, or quarterly visits in leafy neighborhoods.",
+    image: "/images/clean-roofline.jpg",
+    alt: "Clean residential gutter beneath overhanging tree branches",
   },
 ];
 

@@ -18,11 +18,15 @@
         </NuxtLink>
 
         <NuxtLink
-            :to="jobsHref"
+            :to="cleanerLeadsHref"
             class="nav__link"
             active-class="nav__link--active"
         >
           For Cleaners
+        </NuxtLink>
+
+        <NuxtLink to="/quicklist" class="nav__link" active-class="nav__link--active">
+          Quicklist <span v-if="quicklistCount" class="nav__count">{{ quicklistCount }}</span>
         </NuxtLink>
       </nav>
 
@@ -64,12 +68,16 @@
         </NuxtLink>
 
         <NuxtLink
-            :to="jobsHref"
+            :to="cleanerLeadsHref"
             class="nav__mobile-link"
             active-class="nav__mobile-link--active"
             @click="close()"
         >
           For Cleaners
+        </NuxtLink>
+
+        <NuxtLink to="/quicklist" class="nav__mobile-link" active-class="nav__mobile-link--active" @click="close()">
+          Quicklist <span v-if="quicklistCount" class="nav__count">{{ quicklistCount }}</span>
         </NuxtLink>
 
         <NuxtLink :to="bookingsHref" class="nav__mobile-cta" @click="close()">
@@ -93,6 +101,7 @@ type MarketKey = "la" | "sb" | "default";
 
 const route = useRoute();
 const isOpen = ref(false);
+const { count: quicklistCount } = useQuicklist();
 
 /**
  * Market detection strategy (no assumptions about your routing):
@@ -126,7 +135,7 @@ const marketLabel = computed(() => {
 
 const homeHref = computed(() => `${marketBase.value || "/"}`);
 const bookingsHref = computed(() => `${marketBase.value}/booking`);
-const jobsHref = computed(() => `${marketBase.value}/jobs`);
+const cleanerLeadsHref = "/gutter-cleaning-leads";
 
 function open() {
   isOpen.value = true;
@@ -257,6 +266,19 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 
 .nav__link--active::after {
   transform: scaleX(1);
+}
+
+.nav__count {
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #292524;
+  font-size: 11px;
 }
 
 .nav__right {

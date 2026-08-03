@@ -94,6 +94,10 @@
             </div>
 
             <div class="mt-5 flex flex-wrap gap-3">
+              <QuicklistToggle
+                :cleaner-id="result.cleaner.id"
+                :company-name="result.cleaner.companyName"
+              />
               <NuxtLink
                 class="inline-flex items-center justify-center rounded-md bg-stone-950 px-4 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:bg-stone-800"
                 :to="`/cleaners/${result.cleaner.slug}`"
@@ -126,6 +130,14 @@
         </div>
 
         <aside class="h-fit rounded-lg border border-stone-300 bg-white p-5 shadow-sm">
+          <NuxtLink
+            v-if="quicklistCount"
+            class="mb-5 flex items-center justify-between rounded-md bg-amber-100 p-4 font-black text-stone-950 transition hover:bg-amber-200"
+            to="/quicklist"
+          >
+            <span>View your Quicklist</span>
+            <span>{{ quicklistCount }}</span>
+          </NuxtLink>
           <h2 class="text-xl font-black">How this index works</h2>
           <ul class="mt-4 space-y-3 text-sm leading-6 text-stone-700">
             <li>Search matches exact ZIPs first, then city and nearby ZIP prefixes.</li>
@@ -147,6 +159,7 @@ import {
 } from "~~/data/partnerCleaners";
 
 const route = useRoute();
+const { count: quicklistCount } = useQuicklist();
 const locationInput = ref("");
 
 const location = computed(() => {

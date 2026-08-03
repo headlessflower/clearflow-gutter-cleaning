@@ -101,6 +101,10 @@
               <p><strong>Response:</strong> {{ responseLabel(cleaner.responseTimeMinutes) }}</p>
             </div>
             <div class="mt-5 grid gap-3">
+              <QuicklistToggle
+                :cleaner-id="cleaner.id"
+                :company-name="cleaner.companyName"
+              />
               <a class="inline-flex items-center justify-center rounded-md bg-teal-700 px-4 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:bg-teal-800" :href="`tel:${cleaner.phone}`">
                 Call Cleaner
               </a>

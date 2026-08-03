@@ -90,6 +90,18 @@
                       <div class="k">Created</div>
                       <div class="v">{{ fmt(r.created_at) }}</div>
                     </div>
+                    <div>
+                      <div class="k">Quicklist attribution</div>
+                      <div class="v">
+                        <template v-if="r.contact_quicklist_companies && r.quicklist_company_ids.length">
+                          Contact requested: {{ quicklistCompanyNames(r.quicklist_company_ids) }}
+                        </template>
+                        <template v-else-if="r.quicklist_size">
+                          Saved {{ r.quicklist_size }} {{ r.quicklist_size === 1 ? 'company' : 'companies' }}; contact not requested
+                        </template>
+                        <template v-else>—</template>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="notes">
@@ -203,6 +215,7 @@ definePageMeta({
 });
 
 import type { Database } from "~~/types/supabase"
+import { partnerCleaners } from "~~/data/partnerCleaners"
 
 const supabase = useSupabaseClient<Database>();
 
@@ -253,6 +266,12 @@ function serviceLabel(v: BookingRow["service_type"]) {
   if (v === "single_story") return "Single-story";
   if (v === "two_story") return "Two-story";
   return "Large / multi-story";
+}
+
+function quicklistCompanyNames(ids: string[]) {
+  return ids
+    .map((id) => partnerCleaners.find((cleaner) => cleaner.id === id)?.companyName || id)
+    .join(", ");
 }
 
 function applyClientSearch(data: BookingRow[]) {

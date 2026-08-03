@@ -7,6 +7,7 @@
 
   <AppNav/>
   <slot/>
+  <FloatingQuicklist/>
   <AppFooter/>
 </div>
 </template>

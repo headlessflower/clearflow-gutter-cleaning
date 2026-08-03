@@ -1,8 +1,8 @@
 export default defineNuxtRouteMiddleware(async (to) => {
+  if (process.server) return
+
   const user = useSupabaseUser()
   const supabase = useSupabaseClient()
-
-  if (process.server) return
 
   const publicRoutes = [
     '/gutter-cleaning-leads/login',

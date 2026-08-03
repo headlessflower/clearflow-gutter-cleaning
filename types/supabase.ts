@@ -22,6 +22,7 @@ export type Database = {
           city: string
           completed_at: string | null
           contacted_at: string | null
+          contact_quicklist_companies: boolean
           county: string
           created_at: string
           discount_type: string | null
@@ -34,6 +35,8 @@ export type Database = {
           notes: string | null
           phone: string
           preferred_date: string
+          quicklist_company_ids: string[]
+          quicklist_size: number
           referral_count: number | null
           scheduled_for: string | null
           service_type: Database["public"]["Enums"]["service_type"]
@@ -50,6 +53,7 @@ export type Database = {
           city: string
           completed_at?: string | null
           contacted_at?: string | null
+          contact_quicklist_companies?: boolean
           county: string
           created_at?: string
           discount_type?: string | null
@@ -62,6 +66,8 @@ export type Database = {
           notes?: string | null
           phone: string
           preferred_date: string
+          quicklist_company_ids?: string[]
+          quicklist_size?: number
           referral_count?: number | null
           scheduled_for?: string | null
           service_type: Database["public"]["Enums"]["service_type"]
@@ -78,6 +84,7 @@ export type Database = {
           city?: string
           completed_at?: string | null
           contacted_at?: string | null
+          contact_quicklist_companies?: boolean
           county?: string
           created_at?: string
           discount_type?: string | null
@@ -90,6 +97,8 @@ export type Database = {
           notes?: string | null
           phone?: string
           preferred_date?: string
+          quicklist_company_ids?: string[]
+          quicklist_size?: number
           referral_count?: number | null
           scheduled_for?: string | null
           service_type?: Database["public"]["Enums"]["service_type"]

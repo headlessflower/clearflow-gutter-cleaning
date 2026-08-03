@@ -1,0 +1,20 @@
+[Unit]
+Description=ClearFlow Gutters Nuxt server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/clear_flow_gutters
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3003
+ExecStart=/usr/bin/node .output/server/index.mjs
+Restart=always
+RestartSec=5
+
+# If your deploy user is not www-data, change these two lines.
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target
